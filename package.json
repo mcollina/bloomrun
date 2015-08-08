@@ -7,13 +7,17 @@
     "lint": "standard",
     "test": "tape test.js | faucet"
   },
-  "precommit": ["lint", "test"],
+  "precommit": [
+    "lint",
+    "test"
+  ],
   "author": "Matteo Collina <hello@matteocollina.com>",
   "license": "MIT",
   "dependencies": {
     "bloomfilter": "0.0.16"
   },
   "devDependencies": {
+    "fastbench": "^1.0.0",
     "faucet": "0.0.1",
     "pre-commit": "^1.1.1",
     "standard": "^5.0.0",

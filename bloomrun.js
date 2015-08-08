@@ -44,6 +44,26 @@ BloomRun.prototype.add = function (obj) {
   }
 }
 
+function deepPartialMatch (a, b) {
+  var keys;
+
+  if (a === b) {
+    return true
+  } else if (typeof a !== 'object' || typeof b !== 'object') {
+    return false
+  }
+
+  keys = Object.keys(a)
+
+  for (var i = 0; i < keys.length; i++) {
+    if (!deepPartialMatch(a[i], b[i])) {
+      return false
+    }
+  }
+
+  return true
+}
+
 BloomRun.prototype.lookup = function (obj) {
   var keys = genKeys(obj)
 
@@ -57,7 +77,15 @@ BloomRun.prototype.lookup = function (obj) {
     return acc
   }, [])
 
-  console.log(buckets[0].data)
+  for (var i = 0; i < buckets.length; i++) {
+    for (var k = 0; k < buckets[i].data.length; k++) {
+      if (deepPartialMatch(buckets[i].data[k], obj)) {
+        return buckets[i].data[k]
+      }
+    }
+  }
+
+  return null
 }
 
 function Bucket () {
