@@ -65,28 +65,24 @@ function deepPartialMatch (a, b) {
 }
 
 BloomRun.prototype.lookup = function (obj) {
-  var keys = genKeys(obj)
+  var iterator = new Iterator(this, obj)
+  return iterator.next()
+}
 
-  var buckets = this._buckets.reduce(function (acc, bucket) {
-    for (var i = 0; i < keys.length; i++) {
-      if (bucket.filter.test(keys[i])) {
-        acc.push(bucket)
-        break
-      }
-    }
-    return acc
-  }, [])
+BloomRun.prototype.list = function (obj) {
 
-  for (var i = 0; i < buckets.length; i++) {
-    for (var k = 0; k < buckets[i].data.length; k++) {
-      if (deepPartialMatch(buckets[i].data[k], obj)) {
-        return buckets[i].data[k]
-      }
-    }
+  var iterator = new Iterator(this, obj)
+  var list = []
+  var current = null
+
+  while (current = iterator.next()) {
+    list.push(current)
   }
 
-  return null
+  return list
 }
+
+BloomRun.prototype.iterator = Iterator
 
 function Bucket () {
   this.filter = new BloomFilter(
@@ -94,6 +90,61 @@ function Bucket () {
     16        // number of hash functions.
   )
   this.data = []
+}
+
+function matchingBuckets (buckets, pattern) {
+  var keys = genKeys(pattern)
+  var acc = []
+
+  for (var b = 0; b < buckets.length; b++) {
+    for (var i = 0; i < keys.length; i++) {
+      if (buckets[b].filter.test(keys[i])) {
+        acc.push(buckets[b])
+        break
+      }
+    }
+  }
+
+  return acc
+}
+
+function Iterator (parent, obj) {
+  if (!(this instanceof Iterator)) {
+    return new Iterator(this, parent)
+  }
+
+  this.parent = parent
+  this.pattern = obj
+
+  this.buckets = matchingBuckets(parent._buckets, obj)
+
+  this.i = 0
+  this.k = 0
+}
+
+Iterator.prototype.next = function () {
+  var match = null
+
+  if (this.i === this.buckets.length) {
+    return null
+  }
+
+  var current = this.buckets[this.i].data[this.k]
+
+  if (deepPartialMatch(current, this.pattern)) {
+    match = current
+  }
+
+  if (++this.k === this.buckets[this.i].data.length) {
+    ++this.i
+    this.k = 0
+  }
+
+  if (match) {
+    return match
+  } else {
+    return this.next()
+  }
 }
 
 module.exports = BloomRun
