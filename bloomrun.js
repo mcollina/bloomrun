@@ -3,35 +3,35 @@
 var Bucket = require('./lib/bucket')
 var Iterator = require('./lib/iterator')
 var genKeys = require('./lib/genKeys.js')
+var matchingBuckets = require('./lib/matchingBuckets.js')
 
 function BloomRun (opts) {
   if (!(this instanceof BloomRun)) {
     return new BloomRun(opts)
   }
 
-  // magic number of buckets
-  var numBuckets = opts && opts.buckets ? opts.buckets : 42
+  this._buckets = []
+}
 
-  this._buckets = new Array(numBuckets)
-  this._nextBucket = 0
-
-  for (var i = 0; i < numBuckets; i++) {
-    this._buckets[i] = new Bucket()
-  }
+function addKeys (toAdd) {
+  this.filter.add(toAdd)
 }
 
 BloomRun.prototype.add = function (obj) {
-  genKeys(obj).forEach(function (toAdd) {
-    this._buckets[this._nextBucket].filter.add(toAdd)
-  }, this)
+  var buckets = matchingBuckets(this._buckets, obj)
+  var bucket
 
-
-  this._buckets[this._nextBucket].data.push(obj)
-
-  this._nextBucket++
-  if (this._nextBucket === this._buckets.length) {
-    this._nextBucket = 0
+  if (buckets.length > 0) {
+    bucket = buckets[0]
+  } else {
+    bucket = new Bucket()
+    this._buckets.push(bucket)
   }
+
+  genKeys(obj).forEach(addKeys, bucket)
+  bucket.data.push(obj)
+
+  return this
 }
 
 BloomRun.prototype.lookup = function (obj) {
