@@ -3,7 +3,7 @@
 var bench = require('fastbench')
 var bloomrun = require('./')
 
-var singleLookup = (function () {
+var threeEntries = (function () {
   var instance = bloomrun()
 
   instance.add({
@@ -21,9 +21,9 @@ var singleLookup = (function () {
     answer: 42
   })
 
-  return singleLookup
+  return threeEntries
 
-  function singleLookup (done) {
+  function threeEntries (done) {
     var result = instance.lookup({
       something: 'else'
     })
@@ -34,8 +34,37 @@ var singleLookup = (function () {
   }
 })()
 
+var fiveHundredEntries = (function () {
+  var instance = bloomrun()
+  var obj
+
+  // this creates 100 buckets with 5 items each
+  for (var i = 0; i < 100; i++) {
+    for (var k = 0; k < 5; k++) {
+      var obj = {
+        bigCounter: ''+i,
+      }
+      obj['small' + k] = i
+      instance.add(obj)
+    }
+  }
+
+  return fiveHundredEntries
+
+  function fiveHundredEntries (done) {
+    var result = instance.lookup({
+      bigCounter: '99'
+    })
+    if (!result) {
+      throw new Error('muahah')
+    }
+    process.nextTick(done)
+  }
+})()
+
 var run = bench([
-  singleLookup
+  threeEntries,
+  fiveHundredEntries
 ], 100000)
 
 run(run)
