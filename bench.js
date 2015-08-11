@@ -87,10 +87,29 @@ var fiveHundredEntriesAndProperties = (function () {
   }
 })()
 
+var fiveHundredEntriesAndKnownProperties = (function () {
+
+  var instance = buildFiveHundredEntries()
+
+  return fiveHundredEntriesAndKnownProperties
+
+  function fiveHundredEntriesAndKnownProperties (done) {
+    var result = instance.lookup({
+      bigCounter: '99',
+      small4: '99'
+    })
+    if (!result) {
+      throw new Error('muahah')
+    }
+    process.nextTick(done)
+  }
+})()
+
 var run = bench([
   threeEntries,
   fiveHundredEntries,
-  fiveHundredEntriesAndProperties
+  fiveHundredEntriesAndProperties,
+  fiveHundredEntriesAndKnownProperties
 ], 100000)
 
 run(run)
