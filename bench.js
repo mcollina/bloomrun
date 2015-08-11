@@ -34,20 +34,27 @@ var threeEntries = (function () {
   }
 })()
 
-var fiveHundredEntries = (function () {
+function buildFiveHundredEntries () {
   var instance = bloomrun()
   var obj
 
   // this creates 100 buckets with 5 items each
   for (var i = 0; i < 100; i++) {
     for (var k = 0; k < 5; k++) {
-      var obj = {
+      obj = {
         bigCounter: ''+i,
       }
       obj['small' + k] = i
       instance.add(obj)
     }
   }
+
+  return instance
+}
+
+var fiveHundredEntries = (function () {
+
+  var instance = buildFiveHundredEntries()
 
   return fiveHundredEntries
 
@@ -62,9 +69,28 @@ var fiveHundredEntries = (function () {
   }
 })()
 
+var fiveHundredEntriesAndProperties = (function () {
+
+  var instance = buildFiveHundredEntries()
+
+  return fiveHundredEntriesAndProperties
+
+  function fiveHundredEntriesAndProperties (done) {
+    var result = instance.lookup({
+      bigCounter: '99',
+      something: 'else'
+    })
+    if (!result) {
+      throw new Error('muahah')
+    }
+    process.nextTick(done)
+  }
+})()
+
 var run = bench([
   threeEntries,
-  fiveHundredEntries
+  fiveHundredEntries,
+  fiveHundredEntriesAndProperties
 ], 100000)
 
 run(run)

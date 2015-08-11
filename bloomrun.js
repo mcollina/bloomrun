@@ -11,6 +11,8 @@ function BloomRun (opts) {
   }
 
   this._buckets = []
+  // TODO use a polifyll for node v0.10
+  this._properties = new Set()
 }
 
 function addKeys (toAdd) {
@@ -20,6 +22,7 @@ function addKeys (toAdd) {
 BloomRun.prototype.add = function (obj) {
   var buckets = matchingBuckets(this._buckets, obj)
   var bucket
+  var properties = this._properties
 
   if (buckets.length > 0) {
     bucket = buckets[0]
@@ -29,6 +32,9 @@ BloomRun.prototype.add = function (obj) {
   }
 
   genKeys(obj).forEach(addKeys, bucket)
+  Object.keys(obj).forEach(function (key) {
+    properties.add(key)
+  })
   bucket.data.push(obj)
 
   return this
