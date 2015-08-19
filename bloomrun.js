@@ -4,6 +4,7 @@ var Bucket = require('./lib/bucket')
 var Iterator = require('./lib/iterator')
 var genKeys = require('./lib/genKeys.js')
 var matchingBuckets = require('./lib/matchingBuckets.js')
+var Set = require('es6-set')
 
 function BloomRun (opts) {
   if (!(this instanceof BloomRun)) {
@@ -11,7 +12,6 @@ function BloomRun (opts) {
   }
 
   this._buckets = []
-  // TODO use a polifyll for node v0.10
   this._properties = new Set()
 }
 
