@@ -3,5 +3,8 @@
 var bloomrun = require('./')
 var run = bloomrun()
 
-run.add({ 'hello': 'world' })
-console.log(run.lookup({ 'hello': 'world', 'answer': 42 }))
+run.add({ 'hello': 'world' }, function () {
+  console.log('Hello World!')
+})
+
+run.lookup({'hello': 'world'})()

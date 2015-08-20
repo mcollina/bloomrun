@@ -19,7 +19,7 @@ function addKeys (toAdd) {
   this.filter.add(toAdd)
 }
 
-BloomRun.prototype.add = function (obj) {
+BloomRun.prototype.add = function (obj, payload) {
   var buckets = matchingBuckets(this._buckets, obj)
   var bucket
   var properties = this._properties
@@ -35,7 +35,11 @@ BloomRun.prototype.add = function (obj) {
   Object.keys(obj).forEach(function (key) {
     properties.add(key)
   })
-  bucket.data.push(obj)
+
+  bucket.data.push({
+    key: obj,
+    payload: payload || obj
+  })
 
   return this
 }
