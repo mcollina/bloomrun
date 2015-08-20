@@ -2,6 +2,7 @@
 
 var Bucket = require('./lib/bucket')
 var Iterator = require('./lib/iterator')
+var PatternSet = require('./lib/patternSet')
 var genKeys = require('./lib/genKeys.js')
 var matchingBuckets = require('./lib/matchingBuckets.js')
 var Set = require('es6-set')
@@ -15,12 +16,12 @@ function BloomRun (opts) {
   this._properties = new Set()
 }
 
-function addKeys (toAdd) {
+function addPatterns (toAdd) {
   this.filter.add(toAdd)
 }
 
-BloomRun.prototype.add = function (obj, payload) {
-  var buckets = matchingBuckets(this._buckets, obj)
+BloomRun.prototype.add = function (pattern, payload) {
+  var buckets = matchingBuckets(this._buckets, pattern)
   var bucket
   var properties = this._properties
 
@@ -31,26 +32,24 @@ BloomRun.prototype.add = function (obj, payload) {
     this._buckets.push(bucket)
   }
 
-  genKeys(obj).forEach(addKeys, bucket)
-  Object.keys(obj).forEach(function (key) {
+  genKeys(pattern).forEach(addPatterns, bucket)
+  Object.keys(pattern).forEach(function (key) {
     properties.add(key)
   })
 
-  bucket.data.push({
-    key: obj,
-    payload: payload || obj
-  })
+  var patternSet = new PatternSet(pattern, payload)
+  bucket.data.push(patternSet)
 
   return this
 }
 
-BloomRun.prototype.lookup = function (obj) {
-  var iterator = new Iterator(this, obj)
+BloomRun.prototype.lookup = function (pattern) {
+  var iterator = new Iterator(this, pattern)
   return iterator.next()
 }
 
-BloomRun.prototype.list = function (obj) {
-  var iterator = new Iterator(this, obj)
+BloomRun.prototype.list = function (pattern) {
+  var iterator = new Iterator(this, pattern)
   var list = []
   var current = null
 
