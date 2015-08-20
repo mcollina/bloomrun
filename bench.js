@@ -2,6 +2,7 @@
 
 var bench = require('fastbench')
 var bloomrun = require('./')
+var patrun = require('patrun')
 
 var threeEntries = (function () {
   var instance = bloomrun()
@@ -34,8 +35,7 @@ var threeEntries = (function () {
   }
 })()
 
-function buildFiveHundredEntries () {
-  var instance = bloomrun()
+function buildFiveHundredEntries (instance) {
   var obj
 
   // this creates 100 buckets with 5 items each
@@ -54,7 +54,8 @@ function buildFiveHundredEntries () {
 
 var fiveHundredEntries = (function () {
 
-  var instance = buildFiveHundredEntries()
+  var instance = bloomrun()
+  buildFiveHundredEntries(instance)
 
   return fiveHundredEntries
 
@@ -71,7 +72,8 @@ var fiveHundredEntries = (function () {
 
 var fiveHundredEntriesAndProperties = (function () {
 
-  var instance = buildFiveHundredEntries()
+  var instance = bloomrun()
+  buildFiveHundredEntries(instance)
 
   return fiveHundredEntriesAndProperties
 
@@ -89,7 +91,8 @@ var fiveHundredEntriesAndProperties = (function () {
 
 var fiveHundredEntriesAndKnownProperties = (function () {
 
-  var instance = buildFiveHundredEntries()
+  var instance = bloomrun()
+  buildFiveHundredEntries(instance)
 
   return fiveHundredEntriesAndKnownProperties
 
@@ -105,11 +108,63 @@ var fiveHundredEntriesAndKnownProperties = (function () {
   }
 })()
 
+var patrunFiveHundredEntriesAndProperties = (function () {
+
+  var instance = patrun()
+  buildFiveHundredEntries(instance)
+
+  return patrunFiveHundredEntriesAndProperties
+
+  function patrunFiveHundredEntriesAndProperties (done) {
+    var result = instance.list({
+      bigCounter: '99',
+      something: 'else'
+    })
+    if (!result) {
+      throw new Error('muahah')
+    }
+    process.nextTick(done)
+  }
+})()
+
+var patrunThreeEntries = (function () {
+  var instance = patrun()
+
+  instance.add({
+    hello: 'world',
+    answer: 42
+  })
+
+  instance.add({
+    hello: 'matteo',
+    answer: 42
+  })
+
+  instance.add({
+    something: 'else',
+    answer: 42
+  })
+
+  return patrunThreeEntries
+
+  function patrunThreeEntries (done) {
+    var result = instance.list({
+      something: 'else'
+    })
+    if (!result) {
+      throw new Error('muahah')
+    }
+    process.nextTick(done)
+  }
+})()
+
 var run = bench([
   threeEntries,
   fiveHundredEntries,
   fiveHundredEntriesAndProperties,
-  fiveHundredEntriesAndKnownProperties
+  fiveHundredEntriesAndKnownProperties,
+  patrunThreeEntries,
+  patrunFiveHundredEntriesAndProperties
 ], 100000)
 
 run(run)
