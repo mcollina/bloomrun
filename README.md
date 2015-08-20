@@ -24,11 +24,18 @@ npm install bloomrun --save
 ```js
 'use strict'
 
-var bloomrun = require('bloomrun')
-var run = bloomrun()
+var bloomrun = require('./')()
 
-run.add({ 'hello': 'world' })
-console.log(run.lookup({ 'hello': 'world', 'answer': 42 }))
+bloomrun.add({say: 'hello', msg: 'Hello World!'})
+bloomrun.add({say: 'goodbye'}, function () {
+  console.log('Goodbye World!')
+})
+
+var hello = bloomrun.lookup({say: 'hello'})
+console.log(hello.msg)
+
+var goodbye = bloomrun.lookup({say: 'goodbye'})
+goodbye()
 ```
 
 <a name="api"></a>
