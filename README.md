@@ -15,7 +15,7 @@ order__.
 ## Install
 
 ```
-npm i bloomrun --save
+npm install bloomrun --save
 ```
 
 <a name="example"></a>
@@ -48,9 +48,12 @@ Creates a new instance of Bloomrun.
 
 -------------------------------------------------------
 <a name="add"></a>
-### instance.add(pattern)
+### instance.add(pattern [,payload])
 
-Adds a pattern to the Bloomrun instance.
+Adds a pattern to the Bloomrun instance. You can also provide an alternative
+payload to return instead of the pattern itself. This allows pattern based
+retrieval of objects. If no payload is provided the pattern itself will be
+returned.
 
 -------------------------------------------------------
 <a name="lookup"></a>
@@ -58,7 +61,8 @@ Adds a pattern to the Bloomrun instance.
 
 Looks up the first entry that matches the given obj. A match happens
 when all properties of the added pattern matches with the one in the
-passed obj.
+passed obj. If a payload was provided it will be returned instead of
+the pattern.
 
 -------------------------------------------------------
 <a name="iterator"></a>
@@ -72,7 +76,8 @@ are no more.
 <a name="list"></a>
 ### instance.list(obj)
 
-Returns all patterns that matches the object.
+Returns all patterns that matches the object. If a payload was provided
+this will be returned instead of the pattern.
 
 ## License
 
