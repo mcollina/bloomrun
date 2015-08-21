@@ -53,7 +53,7 @@ BloomRun.prototype.list = function (pattern) {
   var list = []
   var current = null
 
-  while (current = iterator.next()) {
+  while ((current = iterator.next()) !== null) {
     list.push(current)
   }
 
