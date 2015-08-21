@@ -1,8 +1,10 @@
-# bloomrun&nbsp;&nbsp;[![Build Status](https://travis-ci.org/mcollina/bloomrun.svg?branch=master)](https://travis-ci.org/mcollina/bloomrun)
+# bloomrun
+[![travis][travis-badge]][travis-url]
+[![git][git-badge]][git-url]
+[![npm][npm-badge]][npm-url]
 
 A js pattern matcher based on bloom filters, inspired by [patrun](http://npm.im/patrun).
-But different: 10x faster, and with results returned in __insertion
-order__.
+But different: 10x faster, and with results returned in __insertion order__.
 
 * [Install](#install)
 * [Example](#example)
@@ -13,6 +15,7 @@ order__.
 
 <a name="install"></a>
 ## Install
+To install bloomrun, simply use npm:
 
 ```
 npm install bloomrun --save
@@ -20,11 +23,13 @@ npm install bloomrun --save
 
 <a name="example"></a>
 ## Example
+The example below can be found [here][example] and ran using `node example.js`. It
+demonstrates how to use bloomrun for pattern matching with or without a payload.
 
 ```js
 'use strict'
 
-var bloomrun = require('./')()
+var bloomrun = require('bloomrun')()
 
 bloomrun.add({say: 'hello', msg: 'Hello World!'})
 bloomrun.add({say: 'goodbye'}, function () {
@@ -43,7 +48,7 @@ goodbye()
 
   * <a href="#constructor"><code><b>bloomrun()</b></code></a>
   * <a href="#add"><code>instance.<b>add()</b></code></a>
-  * <a href="#lookup"><code>instance.<b>list()</b></code></a>
+  * <a href="#lookup"><code>instance.<b>lookup()</b></code></a>
   * <a href="#iterator"><code>instance.<b>iterator()</b></code></a>
   * <a href="#list"><code>instance.<b>list()</b></code></a>
 
@@ -86,6 +91,21 @@ are no more.
 Returns all patterns that matches the object. If a payload was provided
 this will be returned instead of the pattern.
 
-## License
+## TODO
 
-MIT
+- Add acknowledgements
+- Add ability to remove patterns
+- Ensure works with browser via webpack / browserify
+
+## License
+Copyright Matteo Collina 2015, Licensed under [MIT][].
+
+[MIT]: ./LICENSE
+[example]: ./example.js
+
+[travis-badge]: https://img.shields.io/travis/mcollina/bloomrun.svg?style=flat-square
+[travis-url]: https://travis-ci.org/mcollina/bloomrun
+[git-badge]: https://img.shields.io/github/release/mcollina/bloomrun.svg?style=flat-square
+[git-url]: https://github.com/mcollina/bloomrun/releases
+[npm-badge]: https://img.shields.io/npm/v/bloomrun.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/bloomrun
