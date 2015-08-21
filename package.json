@@ -8,7 +8,6 @@
     "test": "tape test.js | faucet"
   },
   "precommit": [
-    "lint",
     "test"
   ],
   "author": "Matteo Collina <hello@matteocollina.com>",

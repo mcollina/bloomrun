@@ -22,6 +22,18 @@ test('lookup a value', function (t) {
   t.notOk(instance.lookup({ something: 'else' }), 'nothing to lookup')
 })
 
+test('returns payload instead of pattern if it has one', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+  var key = { get: 'payload' }
+  var payload = 'test'
+
+  instance.add(key, payload)
+  t.deepEqual(instance.lookup(key), payload, 'data matches')
+  t.notOk(instance.lookup({ something: 'else' }), 'nothing to lookup')
+})
+
 test('list all matches', function (t) {
   t.plan(1)
 

@@ -42,7 +42,7 @@ function buildFiveHundredEntries (instance) {
   for (var i = 0; i < 100; i++) {
     for (var k = 0; k < 5; k++) {
       obj = {
-        bigCounter: ''+i,
+        bigCounter: '' + i
       }
       obj['small' + k] = i
       instance.add(obj)
