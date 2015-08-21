@@ -1,6 +1,6 @@
 {
   "name": "bloomrun",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "JS object pattern matching, powered by bloom filters",
   "main": "bloomrun.js",
   "scripts": {
