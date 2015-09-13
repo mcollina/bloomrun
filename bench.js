@@ -53,7 +53,6 @@ function buildFiveHundredEntries (instance) {
 }
 
 var fiveHundredEntries = (function () {
-
   var instance = bloomrun()
   buildFiveHundredEntries(instance)
 
@@ -71,7 +70,6 @@ var fiveHundredEntries = (function () {
 })()
 
 var fiveHundredEntriesAndProperties = (function () {
-
   var instance = bloomrun()
   buildFiveHundredEntries(instance)
 
@@ -90,7 +88,6 @@ var fiveHundredEntriesAndProperties = (function () {
 })()
 
 var fiveHundredEntriesAndKnownProperties = (function () {
-
   var instance = bloomrun()
   buildFiveHundredEntries(instance)
 
@@ -109,7 +106,6 @@ var fiveHundredEntriesAndKnownProperties = (function () {
 })()
 
 var patrunFiveHundredEntriesAndProperties = (function () {
-
   var instance = patrun()
   buildFiveHundredEntries(instance)
 
