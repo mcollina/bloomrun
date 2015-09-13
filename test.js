@@ -1,81 +1,107 @@
 'use strict'
 
-var test = require('tape')
+var tape = require('tape')
 var bloomrun = require('./')
 
-test('lookup a value', function (t) {
-  t.plan(3)
+tape('null is returned if pattern is not found', function (test) {
+  test.plan(1)
 
   var instance = bloomrun()
-  var data = {
+  var pattern = { cmd: 'set-policy' }
+
+  test.equal(instance.lookup(pattern), null)
+})
+
+tape('pattern is returned on match', function (test) {
+  test.plan(1)
+
+  var instance = bloomrun()
+  var pattern = { cmd: 'set-policy' }
+
+  instance.add(pattern)
+
+  test.deepEqual(instance.lookup(pattern), pattern)
+})
+
+tape('payload is returned instead of pattern if it exists', function (test) {
+  test.plan(1)
+
+  var instance = bloomrun()
+  var pattern = { prefs: 'userId' }
+  var payload = '1234'
+
+  instance.add(pattern, payload)
+
+  test.deepEqual(instance.lookup(pattern), payload)
+})
+
+tape('functions are supported as payloads', function (test) {
+  test.plan(1)
+
+  var instance = bloomrun()
+  var pattern = { prefs: 'userId' }
+  var payload = function () { return '1234'}
+
+  instance.add(pattern, payload)
+
+  test.deepEqual(instance.lookup(pattern)(), payload())
+})
+
+tape('partial matching is supported', function (test) {
+  test.plan(2)
+
+  var instance = bloomrun()
+  var pattern = {
+    cmd: 'add-user',
+    username: 'mcollina'
+  }
+
+  instance.add(pattern)
+
+  test.deepEqual(instance.lookup({ cmd: 'add-user' }), pattern)
+  test.deepEqual(instance.lookup({ username: 'mcollina' }), pattern)
+})
+
+tape('multiple matches is supported', function (test) {
+  test.plan(1)
+
+  var instance = bloomrun()
+  var firstPattern = {
+    group: '123',
+    userId: 'ABC'
+  }
+  var secondPattern = {
+    group: '123',
+    userId: 'ABC'
+  }
+
+  instance.add(firstPattern)
+  instance.add(secondPattern)
+
+  test.deepEqual(instance.list({ group: '123' }), [firstPattern, secondPattern])
+})
+
+tape('iterator based retrieval is supported', function (test) {
+  test.plan(3)
+
+  var instance = bloomrun()
+  var firstPattern = {
     hello: 'world',
     answer: '42'
   }
-
-  instance.add(data)
-  t.deepEqual(instance.lookup({
-    hello: 'world'
-  }), data, 'data matches')
-  t.deepEqual(instance.lookup({
-    answer: '42'
-  }), data, 'data matches')
-  t.notOk(instance.lookup({ something: 'else' }), 'nothing to lookup')
-})
-
-test('returns payload instead of pattern if it has one', function (t) {
-  t.plan(2)
-
-  var instance = bloomrun()
-  var key = { get: 'payload' }
-  var payload = 'test'
-
-  instance.add(key, payload)
-  t.deepEqual(instance.lookup(key), payload, 'data matches')
-  t.notOk(instance.lookup({ something: 'else' }), 'nothing to lookup')
-})
-
-test('list all matches', function (t) {
-  t.plan(1)
-
-  var instance = bloomrun()
-  var data1 = {
-    hello: 'world',
-    answer: '42'
-  }
-  var data2 = {
+  var secondPattern = {
     hello: 'world',
     name: 'matteo'
   }
 
-  instance.add(data1)
-  instance.add(data2)
-
-  t.deepEqual(instance.list({
-    hello: 'world'
-  }), [data1, data2], 'data matches')
-})
-
-test('iterator', function (t) {
-  t.plan(3)
-
-  var instance = bloomrun()
-  var data1 = {
-    hello: 'world',
-    answer: '42'
-  }
-  var data2 = {
-    hello: 'world',
-    name: 'matteo'
-  }
-
-  instance.add(data1)
-  instance.add(data2)
+  instance.add(firstPattern)
+  instance.add(secondPattern)
 
   var iterator = instance.iterator({
     hello: 'world'
   })
 
-  t.deepEqual(iterator.next(), data1, 'data matches')
-  t.deepEqual(iterator.next(), data2, 'data matches')
-  t.notOk(iterator.next(), 'nothing more')
+  test.deepEqual(iterator.next(), firstPattern, 'data matches')
+  test.deepEqual(iterator.next(), secondPattern, 'data matches')
+  test.notOk(iterator.next(), 'nothing more')
 })
