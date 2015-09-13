@@ -106,22 +106,7 @@ test('iterator based retrieval is supported', function (t) {
   t.notOk(iterator.next())
 })
 
-test('removing single patterns is supported', function (t) {
-  t.plan(2)
-
-  var instance = bloomrun()
-  var pattern = { group: '123', userId: 'ABC' }
-
-  instance.add(pattern)
-
-  t.deepEqual(instance.lookup({ group: '123' }), pattern)
-
-  instance.remove(pattern)
-
-  t.equal(instance.lookup({ group: '123' }), null)
-})
-
-test('removing single patterns is supported', function (t) {
+test('removing patterns is supported', function (t) {
   t.plan(2)
 
   var instance = bloomrun()
