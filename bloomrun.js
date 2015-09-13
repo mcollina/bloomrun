@@ -20,6 +20,31 @@ function addPatterns (toAdd) {
   this.filter.add(toAdd)
 }
 
+function removePattern (bucket, pattern, payload) {
+  var foundPattern = false
+
+  for (var i = 0; i < bucket.data.length; i++) {
+    if (pattern === bucket.data[i].pattern) {
+      if (payload === bucket.data[i].payload) {
+        bucket.data.splice(i, 1)
+        foundPattern = true
+
+        removePattern(bucket, pattern, payload)
+      }
+    }
+  }
+
+  return foundPattern
+}
+
+function removeBucket (buckets, bucket) {
+  for (var i = 0; i < buckets.length; i++) {
+    if (bucket === buckets[i]) {
+      buckets.splice(i, 1)
+    }
+  }
+}
+
 BloomRun.prototype.add = function (pattern, payload) {
   var buckets = matchingBuckets(this._buckets, pattern)
   var bucket
@@ -43,35 +68,28 @@ BloomRun.prototype.add = function (pattern, payload) {
   return this
 }
 
-BloomRun.prototype.remove = function (pattern) {
-  var properties = this._properties
+BloomRun.prototype.remove = function (pattern, payload) {
   var matches = matchingBuckets(this._buckets, pattern)
-  var buckets = this._buckets
-  var bucket
+  payload = payload || pattern
 
   if (matches.length > 0) {
-    bucket = matches[0]
+    for (var i = 0; i < matches.length; i++) {
+      var bucket = matches[i]
 
-    for (var i = 0; i < bucket.data.length; i++) {
-      if (pattern === bucket.data[i].pattern) {
-        bucket.data.splice(i, 1)
+      if (removePattern(bucket, pattern, payload)) {
+        removeBucket(this._buckets, bucket)
+
+        var that = this
+
+        Object.keys(pattern).forEach(function (key) {
+          that._properties.delete(key)
+        })
+
+        bucket.data.forEach(function (patternSet) {
+          that.add(patternSet.pattern, patternSet.payload)
+        })
       }
     }
-
-    for (var b = 0; i < buckets.length; i++) {
-      if (bucket === buckets[b]) {
-        this._buckets.splice(b, 1)
-      }
-    }
-
-    Object.keys(pattern).forEach(function (key) {
-      properties.delete(key)
-    })
-
-    var that = this
-    bucket.data.forEach(function (patternSet) {
-      that.add(patternSet.pattern, patternSet.payload)
-    })
   }
 
   return this

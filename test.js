@@ -121,6 +121,37 @@ test('removing single patterns is supported', function (t) {
   t.equal(instance.lookup({ group: '123' }), null)
 })
 
+test('removing single patterns is supported', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+  var pattern = { group: '123', userId: 'ABC' }
+
+  instance.add(pattern)
+
+  t.deepEqual(instance.lookup({ group: '123' }), pattern)
+
+  instance.remove(pattern)
+
+  t.equal(instance.lookup({ group: '123' }), null)
+})
+
+test('remove deletes all matches', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+  var pattern = { group: '123', userId: 'ABC' }
+
+  instance.add(pattern)
+  instance.add(pattern)
+
+  t.deepEqual(instance.list({ group: '123' }), [pattern, pattern])
+
+  instance.remove(pattern)
+
+  t.equal(instance.lookup({ group: '123' }), null)
+})
+
 test('removing causes filters to be rebuilt', function (t) {
   t.plan(4)
 
@@ -138,4 +169,20 @@ test('removing causes filters to be rebuilt', function (t) {
 
   t.equal(instance.lookup({ group: '123' }), secondPattern)
   t.deepEqual(instance.lookup({ userId: 'DCF' }), secondPattern)
+})
+
+test('payload is considered when removing', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+  var pattern = { group: '123', userId: 'ABC' }
+
+  instance.add(pattern, 'XYZ')
+  instance.add(pattern, '567')
+
+  t.deepEqual(instance.list({ group: '123' }), ['XYZ', '567'])
+
+  instance.remove(pattern, '567')
+
+  t.equal(instance.lookup({ group: '123' }), 'XYZ')
 })
