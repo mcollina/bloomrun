@@ -43,6 +43,40 @@ BloomRun.prototype.add = function (pattern, payload) {
   return this
 }
 
+BloomRun.prototype.remove = function (pattern) {
+  var properties = this._properties
+  var matches = matchingBuckets(this._buckets, pattern)
+  var buckets = this._buckets
+  var bucket
+
+  if (matches.length > 0) {
+    bucket = matches[0]
+
+    for (var i = 0; i < bucket.data.length; i++) {
+      if (pattern === bucket.data[i].pattern) {
+        bucket.data.splice(i, 1)
+      }
+    }
+
+    for (var b = 0; i < buckets.length; i++) {
+      if (bucket === buckets[b]) {
+        this._buckets.splice(b, 1)
+      }
+    }
+
+    Object.keys(pattern).forEach(function (key) {
+      properties.delete(key)
+    })
+
+    var that = this
+    bucket.data.forEach(function (patternSet) {
+      that.add(patternSet.pattern, patternSet.payload)
+    })
+  }
+
+  return this
+}
+
 BloomRun.prototype.lookup = function (pattern) {
   var iterator = new Iterator(this, pattern)
   return iterator.next()

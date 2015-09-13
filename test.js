@@ -1,30 +1,30 @@
 'use strict'
 
-var tape = require('tape')
+var test = require('tape')
 var bloomrun = require('./')
 
-tape('null is returned if pattern is not found', function (test) {
-  test.plan(1)
+test('null is returned if pattern is not found', function (t) {
+  t.plan(1)
 
   var instance = bloomrun()
   var pattern = { cmd: 'set-policy' }
 
-  test.equal(instance.lookup(pattern), null)
+  t.equal(instance.lookup(pattern), null)
 })
 
-tape('pattern is returned on match', function (test) {
-  test.plan(1)
+test('pattern is returned on match', function (t) {
+  t.plan(1)
 
   var instance = bloomrun()
   var pattern = { cmd: 'set-policy' }
 
   instance.add(pattern)
 
-  test.deepEqual(instance.lookup(pattern), pattern)
+  t.deepEqual(instance.lookup(pattern), pattern)
 })
 
-tape('payload is returned instead of pattern if it exists', function (test) {
-  test.plan(1)
+test('payload is returned instead of pattern if it exists', function (t) {
+  t.plan(1)
 
   var instance = bloomrun()
   var pattern = { prefs: 'userId' }
@@ -32,11 +32,11 @@ tape('payload is returned instead of pattern if it exists', function (test) {
 
   instance.add(pattern, payload)
 
-  test.deepEqual(instance.lookup(pattern), payload)
+  t.deepEqual(instance.lookup(pattern), payload)
 })
 
-tape('functions are supported as payloads', function (test) {
-  test.plan(1)
+test('functions are supported as payloads', function (t) {
+  t.plan(1)
 
   var instance = bloomrun()
   var pattern = { prefs: 'userId' }
@@ -44,11 +44,11 @@ tape('functions are supported as payloads', function (test) {
 
   instance.add(pattern, payload)
 
-  test.deepEqual(instance.lookup(pattern)(), payload())
+  t.deepEqual(instance.lookup(pattern)(), payload())
 })
 
-tape('partial matching is supported', function (test) {
-  test.plan(2)
+test('partial matching is supported', function (t) {
+  t.plan(2)
 
   var instance = bloomrun()
   var pattern = {
@@ -58,12 +58,12 @@ tape('partial matching is supported', function (test) {
 
   instance.add(pattern)
 
-  test.deepEqual(instance.lookup({ cmd: 'add-user' }), pattern)
-  test.deepEqual(instance.lookup({ username: 'mcollina' }), pattern)
+  t.deepEqual(instance.lookup({ cmd: 'add-user' }), pattern)
+  t.deepEqual(instance.lookup({ username: 'mcollina' }), pattern)
 })
 
-tape('multiple matches is supported', function (test) {
-  test.plan(1)
+test('multiple matches is supported', function (t) {
+  t.plan(1)
 
   var instance = bloomrun()
   var firstPattern = {
@@ -78,11 +78,11 @@ tape('multiple matches is supported', function (test) {
   instance.add(firstPattern)
   instance.add(secondPattern)
 
-  test.deepEqual(instance.list({ group: '123' }), [firstPattern, secondPattern])
+  t.deepEqual(instance.list({ group: '123' }), [firstPattern, secondPattern])
 })
 
-tape('iterator based retrieval is supported', function (test) {
-  test.plan(3)
+test('iterator based retrieval is supported', function (t) {
+  t.plan(3)
 
   var instance = bloomrun()
   var firstPattern = {
@@ -101,7 +101,41 @@ tape('iterator based retrieval is supported', function (test) {
     hello: 'world'
   })
 
-  test.deepEqual(iterator.next(), firstPattern, 'data matches')
-  test.deepEqual(iterator.next(), secondPattern, 'data matches')
-  test.notOk(iterator.next(), 'nothing more')
+  t.deepEqual(iterator.next(), firstPattern)
+  t.deepEqual(iterator.next(), secondPattern)
+  t.notOk(iterator.next())
+})
+
+test('removing single patterns is supported', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+  var pattern = { group: '123', userId: 'ABC' }
+
+  instance.add(pattern)
+
+  t.deepEqual(instance.lookup({ group: '123' }), pattern)
+
+  instance.remove(pattern)
+
+  t.equal(instance.lookup({ group: '123' }), null)
+})
+
+test('removing causes filters to be rebuilt', function (t) {
+  t.plan(4)
+
+  var instance = bloomrun()
+  var firstPattern = { group: '123', userId: 'ABC' }
+  var secondPattern = { group: '123', userId: 'DCF' }
+
+  instance.add(firstPattern)
+  instance.add(secondPattern)
+
+  t.deepEqual(instance.lookup({ group: '123' }), firstPattern)
+  t.deepEqual(instance.lookup({ userId: 'DCF' }), secondPattern)
+
+  instance.remove(firstPattern)
+
+  t.equal(instance.lookup({ group: '123' }), secondPattern)
+  t.deepEqual(instance.lookup({ userId: 'DCF' }), secondPattern)
 })
