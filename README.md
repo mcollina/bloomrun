@@ -9,7 +9,6 @@ But different: 10x faster, and with results returned in __insertion order__.
 * [Install](#install)
 * [Example](#example)
 * [API](#api)
-* [TODO](#todo)
 * [Acknowledgements](#acknowledgements)
 * [License](#license)
 
@@ -107,7 +106,7 @@ this will be returned instead of the pattern.
 
 This library is heavily inspired by Richard Rodger's
 [patrun](http://npm.im/patrun) and [seneca](http://npm.im/seneca).
-Also, It will not be possible without
+Also, It would not be possible without
 [bloomfilter](https://www.npmjs.com/package/bloomfilter).
 
 ## License
