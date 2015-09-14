@@ -40,7 +40,7 @@ test('functions are supported as payloads', function (t) {
 
   var instance = bloomrun()
   var pattern = { prefs: 'userId' }
-  var payload = function () { return '1234'}
+  var payload = function () { return '1234' }
 
   instance.add(pattern, payload)
 
