@@ -29,7 +29,7 @@ function removePattern (bucket, pattern, payload) {
 
   for (var i = 0; i < bucket.data.length; i++) {
     if (pattern === bucket.data[i].pattern) {
-      if (payload === bucket.data[i].payload) {
+      if (payload === null || payload === bucket.data[i].payload) {
         bucket.data.splice(i, 1)
         foundPattern = true
 
@@ -78,7 +78,7 @@ BloomRun.prototype.add = function (pattern, payload) {
 
 BloomRun.prototype.remove = function (pattern, payload) {
   var matches = matchingBuckets(this._buckets, pattern)
-  payload = payload || pattern
+  payload = payload || null
 
   if (matches.length > 0) {
     for (var i = 0; i < matches.length; i++) {

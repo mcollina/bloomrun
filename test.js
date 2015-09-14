@@ -85,21 +85,13 @@ test('iterator based retrieval is supported', function (t) {
   t.plan(3)
 
   var instance = bloomrun()
-  var firstPattern = {
-    hello: 'world',
-    answer: '42'
-  }
-  var secondPattern = {
-    hello: 'world',
-    name: 'matteo'
-  }
+  var firstPattern = { hello: 'world', answer: '42' }
+  var secondPattern = { hello: 'world', name: 'matteo' }
 
   instance.add(firstPattern)
   instance.add(secondPattern)
 
-  var iterator = instance.iterator({
-    hello: 'world'
-  })
+  var iterator = instance.iterator({ hello: 'world' })
 
   t.deepEqual(iterator.next(), firstPattern)
   t.deepEqual(iterator.next(), secondPattern)
@@ -128,13 +120,29 @@ test('remove deletes all matches', function (t) {
   var pattern = { group: '123', userId: 'ABC' }
 
   instance.add(pattern)
-  instance.add(pattern)
+  instance.add(pattern, 'TEST')
 
-  t.deepEqual(instance.list({ group: '123' }), [pattern, pattern])
+  t.deepEqual(instance.list({ group: '123' }), [pattern, 'TEST'])
 
   instance.remove(pattern)
 
   t.equal(instance.lookup({ group: '123' }), null)
+})
+
+test('payload is considered when removing', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+  var pattern = { group: '123', userId: 'ABC' }
+
+  instance.add(pattern, 'XYZ')
+  instance.add(pattern, '567')
+
+  t.deepEqual(instance.list({ group: '123' }), ['XYZ', '567'])
+
+  instance.remove(pattern, '567')
+
+  t.equal(instance.lookup({ group: '123' }), 'XYZ')
 })
 
 test('removing causes filters to be rebuilt', function (t) {
@@ -154,20 +162,4 @@ test('removing causes filters to be rebuilt', function (t) {
 
   t.equal(instance.lookup({ group: '123' }), secondPattern)
   t.deepEqual(instance.lookup({ userId: 'DCF' }), secondPattern)
-})
-
-test('payload is considered when removing', function (t) {
-  t.plan(2)
-
-  var instance = bloomrun()
-  var pattern = { group: '123', userId: 'ABC' }
-
-  instance.add(pattern, 'XYZ')
-  instance.add(pattern, '567')
-
-  t.deepEqual(instance.list({ group: '123' }), ['XYZ', '567'])
-
-  instance.remove(pattern, '567')
-
-  t.equal(instance.lookup({ group: '123' }), 'XYZ')
 })
