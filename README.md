@@ -103,13 +103,15 @@ are no more.
 Returns all patterns that matches the object. If a payload was provided
 this will be returned instead of the pattern.
 
-## TODO
+## Acknowledgements
 
-- Add acknowledgements
-- Add ability to remove patterns
-- Ensure works with browser via webpack / browserify
+This library is heavily inspired by Richard Rodger's
+[patrun](http://npm.im/patrun) and [seneca](http://npm.im/seneca).
+Also, It will not be possible without
+[bloomfilter](https://www.npmjs.com/package/bloomfilter).
 
 ## License
+
 Copyright Matteo Collina 2015, Licensed under [MIT][].
 
 [MIT]: ./LICENSE
