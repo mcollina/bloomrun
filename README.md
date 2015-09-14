@@ -48,6 +48,7 @@ goodbye()
 
   * <a href="#constructor"><code><b>bloomrun()</b></code></a>
   * <a href="#add"><code>instance.<b>add()</b></code></a>
+  * <a href="#remove"><code>instance.<b>remove()</b></code></a>
   * <a href="#lookup"><code>instance.<b>lookup()</b></code></a>
   * <a href="#iterator"><code>instance.<b>iterator()</b></code></a>
   * <a href="#list"><code>instance.<b>list()</b></code></a>
@@ -68,6 +69,17 @@ retrieval of objects. If no payload is provided the pattern itself will be
 returned.
 
 -------------------------------------------------------
+
+<a name="remove"></a>
+### instance.remove(pattern [,payload])
+
+Removes a pattern from the Bloomrun instance. Filters are rebuilt after each
+removal which may mean the same pattern is matched by another filter. In cases
+where two patterns differ only by payload, the supplied payload can be used to
+determine the correct match.
+
+-------------------------------------------------------
+
 <a name="lookup"></a>
 ### instance.lookup(obj)
 

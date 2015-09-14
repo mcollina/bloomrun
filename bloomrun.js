@@ -20,6 +20,39 @@ function addPatterns (toAdd) {
   this.filter.add(toAdd)
 }
 
+function addPatternSet (patternSet) {
+  this.add(patternSet.pattern, patternSet.payload)
+}
+
+function removePattern (bucket, pattern, payload) {
+  var foundPattern = false
+
+  for (var i = 0; i < bucket.data.length; i++) {
+    if (pattern === bucket.data[i].pattern) {
+      if (payload === bucket.data[i].payload) {
+        bucket.data.splice(i, 1)
+        foundPattern = true
+
+        removePattern(bucket, pattern, payload)
+      }
+    }
+  }
+
+  return foundPattern
+}
+
+function removeBucket (buckets, bucket) {
+  for (var i = 0; i < buckets.length; i++) {
+    if (bucket === buckets[i]) {
+      buckets.splice(i, 1)
+    }
+  }
+}
+
+function removeProperty (key) {
+  this.delete(key)
+}
+
 BloomRun.prototype.add = function (pattern, payload) {
   var buckets = matchingBuckets(this._buckets, pattern)
   var bucket
@@ -39,6 +72,26 @@ BloomRun.prototype.add = function (pattern, payload) {
 
   var patternSet = new PatternSet(pattern, payload)
   bucket.data.push(patternSet)
+
+  return this
+}
+
+BloomRun.prototype.remove = function (pattern, payload) {
+  var matches = matchingBuckets(this._buckets, pattern)
+  payload = payload || pattern
+
+  if (matches.length > 0) {
+    for (var i = 0; i < matches.length; i++) {
+      var bucket = matches[i]
+
+      if (removePattern(bucket, pattern, payload)) {
+        removeBucket(this._buckets, bucket)
+
+        Object.keys(pattern).forEach(removeProperty, this._properties)
+        bucket.data.forEach(addPatternSet, this)
+      }
+    }
+  }
 
   return this
 }
