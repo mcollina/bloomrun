@@ -71,10 +71,12 @@ returned.
 -------------------------------------------------------
 
 <a name="remove"></a>
-### instance.remove(pattern)
+### instance.remove(pattern [,payload])
 
 Removes a pattern from the Bloomrun instance. Filters are rebuilt after each
-removal which may mean the same pattern is matched by another filter.
+removal which may mean the same pattern is matched by another filter. In cases
+where two patterns differ only by payload, the supplied payload can be used to
+determine the correct match.
 
 -------------------------------------------------------
 

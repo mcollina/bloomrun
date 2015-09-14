@@ -20,6 +20,10 @@ function addPatterns (toAdd) {
   this.filter.add(toAdd)
 }
 
+function addPatternSet (patternSet) {
+  this.add(patternSet.pattern, patternSet.payload)
+}
+
 function removePattern (bucket, pattern, payload) {
   var foundPattern = false
 
@@ -43,6 +47,10 @@ function removeBucket (buckets, bucket) {
       buckets.splice(i, 1)
     }
   }
+}
+
+function removeProperty (key) {
+  this.delete(key)
 }
 
 BloomRun.prototype.add = function (pattern, payload) {
@@ -79,15 +87,8 @@ BloomRun.prototype.remove = function (pattern, payload) {
       if (removePattern(bucket, pattern, payload)) {
         removeBucket(this._buckets, bucket)
 
-        var that = this
-
-        Object.keys(pattern).forEach(function (key) {
-          that._properties.delete(key)
-        })
-
-        bucket.data.forEach(function (patternSet) {
-          that.add(patternSet.pattern, patternSet.payload)
-        })
+        Object.keys(pattern).forEach(removeProperty, this._properties)
+        bucket.data.forEach(addPatternSet, this)
       }
     }
   }
