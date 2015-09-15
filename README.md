@@ -75,7 +75,8 @@ returned.
 Removes a pattern from the Bloomrun instance. Filters are rebuilt after each
 removal which may mean the same pattern is matched by another filter. In cases
 where two patterns differ only by payload, the supplied payload can be used to
-determine the correct match.
+determine the correct match. If no payload is supplied any matched pattern will
+be removed regardless of it's own payload.
 
 -------------------------------------------------------
 
