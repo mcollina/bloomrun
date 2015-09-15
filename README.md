@@ -108,7 +108,7 @@ this will be returned instead of the pattern.
 This library is heavily inspired by Richard Rodger's
 [patrun](http://npm.im/patrun) and [seneca](http://npm.im/seneca).
 Also, It would not be possible without
-[bloomfilter](hgitttps://www.npmjs.com/package/bloomfilter).
+[bloomfilter](https://www.npmjs.com/package/bloomfilter).
 
 ## License
 

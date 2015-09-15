@@ -2,6 +2,7 @@
 
 var test = require('tape')
 var bloomrun = require('./')
+var drain = require('nanite-drain')
 
 test('null is returned if pattern is not found', function (t) {
   t.plan(1)
@@ -143,6 +144,26 @@ test('payload is considered when removing', function (t) {
   instance.remove(pattern, '567')
 
   t.equal(instance.lookup({ group: '123' }), 'XYZ')
+})
+
+test('complex payloads are matched correctly', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+  var pattern = { group: '123', userId: 'ABC' }
+  var payloadOne = drain(function (msg, done) { done() })
+  var payloadTwo = drain(function (msg, done) { done() })
+
+  instance.add(pattern, payloadOne)
+  instance.add(pattern, payloadTwo)
+  instance.add(pattern, '567')
+
+  t.deepEqual(instance.list({ group: '123' }), [payloadOne, payloadTwo, '567'])
+
+  instance.remove(pattern, payloadOne)
+  instance.remove(pattern, payloadTwo)
+
+  t.equal(instance.lookup({ group: '123' }), '567')
 })
 
 test('removing causes filters to be rebuilt', function (t) {
