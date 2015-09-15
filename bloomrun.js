@@ -3,8 +3,9 @@
 var Bucket = require('./lib/bucket')
 var Iterator = require('./lib/iterator')
 var PatternSet = require('./lib/patternSet')
-var genKeys = require('./lib/genKeys.js')
-var matchingBuckets = require('./lib/matchingBuckets.js')
+var genKeys = require('./lib/genKeys')
+var matchingBuckets = require('./lib/matchingBuckets')
+var deepPartialMatch = require('./lib/deepPartialMatch')
 var Set = require('es6-set')
 
 function BloomRun (opts) {
@@ -28,7 +29,7 @@ function removePattern (bucket, pattern, payload) {
   var foundPattern = false
 
   for (var i = 0; i < bucket.data.length; i++) {
-    if (pattern === bucket.data[i].pattern) {
+    if (deepPartialMatch(pattern, bucket.data[i].pattern)) {
       if (payload === null || payload === bucket.data[i].payload) {
         bucket.data.splice(i, 1)
         foundPattern = true
