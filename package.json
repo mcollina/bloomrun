@@ -1,6 +1,6 @@
 {
   "name": "bloomrun",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "JS object pattern matching, powered by bloom filters",
   "main": "bloomrun.js",
   "scripts": {
@@ -12,6 +12,9 @@
     "test"
   ],
   "author": "Matteo Collina <hello@matteocollina.com>",
+  "contributors": [
+    "Dean McDonnell (http://mcdonnelldean.me)"
+  ],
   "repository": "https://github.com/mcollina/bloomrun.git",
   "license": "MIT",
   "dependencies": {
