@@ -1,6 +1,5 @@
 ![logo](./docs/imgs/bloomrun-banner.jpg)
 
-# bloomrun
 [![travis][travis-badge]][travis-url]
 [![git][git-badge]][git-url]
 [![npm][npm-badge]][npm-url]
