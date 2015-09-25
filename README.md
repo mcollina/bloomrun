@@ -1,3 +1,5 @@
+[![logo][logo-url]][npm-url]
+
 # bloomrun
 [![travis][travis-badge]][travis-url]
 [![git][git-badge]][git-url]
@@ -123,3 +125,4 @@ Copyright Matteo Collina 2015, Licensed under [MIT][].
 [git-url]: https://github.com/mcollina/bloomrun/releases
 [npm-badge]: https://img.shields.io/npm/v/bloomrun.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/bloomrun
+[logo-url]: ./docs/imgs/bloomrun-banner.jpg
