@@ -2,7 +2,6 @@
 
 var test = require('tape')
 var bloomrun = require('./')
-var drain = require('nanite-drain')
 
 test('null is returned if pattern is not found', function (t) {
   t.plan(1)
@@ -151,8 +150,9 @@ test('complex payloads are matched correctly', function (t) {
 
   var instance = bloomrun()
   var pattern = { group: '123', userId: 'ABC' }
-  var payloadOne = drain(function (msg, done) { done() })
-  var payloadTwo = drain(function (msg, done) { done() })
+
+  function payloadOne () { }
+  function payloadTwo () { }
 
   instance.add(pattern, payloadOne)
   instance.add(pattern, payloadTwo)
@@ -191,8 +191,9 @@ test('patterns can be listed while using payloads', function (t) {
   var instance = bloomrun()
   var pattern1 = { group: '123', userId: 'ABC' }
   var pattern2 = { group: '123', userId: 'DEF' }
-  var payloadOne = drain(function (msg, done) { done() })
-  var payloadTwo = drain(function (msg, done) { done() })
+
+  function payloadOne () { }
+  function payloadTwo () { }
 
   instance.add(pattern1, payloadOne)
   instance.add(pattern2, payloadTwo)
@@ -206,8 +207,9 @@ test('patterns can be looked up while using payloads', function (t) {
   var instance = bloomrun()
   var pattern1 = { group: '123', userId: 'ABC' }
   var pattern2 = { group: '123', userId: 'DEF' }
-  var payloadOne = drain(function (msg, done) { done() })
-  var payloadTwo = drain(function (msg, done) { done() })
+
+  function payloadOne () { }
+  function payloadTwo () { }
 
   instance.add(pattern1, payloadOne)
   instance.add(pattern2, payloadTwo)
@@ -221,8 +223,9 @@ test('iterators can be used to fetch only patterns', function (t) {
   var instance = bloomrun()
   var pattern1 = { group: '123', userId: 'ABC' }
   var pattern2 = { group: '123', userId: 'DEF' }
-  var payloadOne = drain(function (msg, done) { done() })
-  var payloadTwo = drain(function (msg, done) { done() })
+
+  function payloadOne () { }
+  function payloadTwo () { }
 
   instance.add(pattern1, payloadOne)
   instance.add(pattern2, payloadTwo)
@@ -240,8 +243,9 @@ test('listing all payloads', function (t) {
   var instance = bloomrun()
   var pattern1 = { group: '123', userId: 'ABC' }
   var pattern2 = { group: '123', userId: 'DEF' }
-  var payloadOne = drain(function (msg, done) { done() })
-  var payloadTwo = drain(function (msg, done) { done() })
+
+  function payloadOne () { }
+  function payloadTwo () { }
 
   instance.add(pattern1, payloadOne)
   instance.add(pattern2, payloadTwo)
@@ -255,8 +259,9 @@ test('listing all patterns', function (t) {
   var instance = bloomrun()
   var pattern1 = { group: '123', userId: 'ABC' }
   var pattern2 = { group: '123', userId: 'DEF' }
-  var payloadOne = drain(function (msg, done) { done() })
-  var payloadTwo = drain(function (msg, done) { done() })
+
+  function payloadOne () { }
+  function payloadTwo () { }
 
   instance.add(pattern1, payloadOne)
   instance.add(pattern2, payloadTwo)
