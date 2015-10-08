@@ -83,27 +83,41 @@ be removed regardless of it's own payload.
 -------------------------------------------------------
 
 <a name="lookup"></a>
-### instance.lookup(obj)
+### instance.lookup(obj [, opts])
 
 Looks up the first entry that matches the given obj. A match happens
 when all properties of the added pattern matches with the one in the
 passed obj. If a payload was provided it will be returned instead of
 the pattern.
 
+Options:
+ * `patterns: true`, if you want to retrieve only patterns, not
+   payloads
+
 -------------------------------------------------------
 <a name="iterator"></a>
-### instance.iterator(obj)
+### instance.iterator(obj [, opts])
 
 Returns an iterator, which is an object with a `next` method. `next`
 will return the next pattern that matches the object or `null` if there
 are no more.
+If `obj` is null, all patterns/payload will be returned.
+
+Options:
+ * `patterns: true`, if you want to retrieve only patterns, not
+   payloads
 
 -------------------------------------------------------
 <a name="list"></a>
-### instance.list(obj)
+### instance.list(obj [, opts])
 
 Returns all patterns that matches the object. If a payload was provided
 this will be returned instead of the pattern.
+If `obj` is null, all patterns/payload will be returned.
+
+Options:
+ * `patterns: true`, if you want to retrieve only patterns, not
+   payloads
 
 ## Acknowledgements
 

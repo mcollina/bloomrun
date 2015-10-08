@@ -2,7 +2,6 @@
 
 var test = require('tape')
 var bloomrun = require('./')
-var drain = require('nanite-drain')
 
 test('null is returned if pattern is not found', function (t) {
   t.plan(1)
@@ -151,8 +150,9 @@ test('complex payloads are matched correctly', function (t) {
 
   var instance = bloomrun()
   var pattern = { group: '123', userId: 'ABC' }
-  var payloadOne = drain(function (msg, done) { done() })
-  var payloadTwo = drain(function (msg, done) { done() })
+
+  function payloadOne () { }
+  function payloadTwo () { }
 
   instance.add(pattern, payloadOne)
   instance.add(pattern, payloadTwo)
@@ -183,4 +183,88 @@ test('removing causes filters to be rebuilt', function (t) {
 
   t.equal(instance.lookup({ group: '123' }), secondPattern)
   t.deepEqual(instance.lookup({ userId: 'DCF' }), secondPattern)
+})
+
+test('patterns can be listed while using payloads', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123', userId: 'ABC' }
+  var pattern2 = { group: '123', userId: 'DEF' }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.deepEqual(instance.list({ group: '123' }, { patterns: true }), [pattern1, pattern2])
+})
+
+test('patterns can be looked up while using payloads', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123', userId: 'ABC' }
+  var pattern2 = { group: '123', userId: 'DEF' }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.equal(instance.lookup({ group: '123' }, { patterns: true }), pattern1)
+})
+
+test('iterators can be used to fetch only patterns', function (t) {
+  t.plan(3)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123', userId: 'ABC' }
+  var pattern2 = { group: '123', userId: 'DEF' }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  var iterator = instance.iterator({ group: '123' }, { patterns: true })
+
+  t.equal(iterator.next(), pattern1)
+  t.equal(iterator.next(), pattern2)
+  t.equal(iterator.next(), null)
+})
+
+test('listing all payloads', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123', userId: 'ABC' }
+  var pattern2 = { group: '123', userId: 'DEF' }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.deepEqual(instance.list(), [payloadOne, payloadTwo])
+})
+
+test('listing all patterns', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123', userId: 'ABC' }
+  var pattern2 = { group: '123', userId: 'DEF' }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.deepEqual(instance.list(null, { patterns: true }), [pattern1, pattern2])
 })

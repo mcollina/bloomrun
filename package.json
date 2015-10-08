@@ -24,7 +24,6 @@
   "devDependencies": {
     "fastbench": "^1.0.0",
     "faucet": "0.0.1",
-    "nanite-drain": "^0.1.0",
     "patrun": "^0.4.4",
     "pre-commit": "^1.1.1",
     "standard": "^5.0.0",
