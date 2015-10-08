@@ -233,3 +233,33 @@ test('iterators can be used to fetch only patterns', function (t) {
   t.equal(iterator.next(), pattern2)
   t.equal(iterator.next(), null)
 })
+
+test('listing all payloads', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123', userId: 'ABC' }
+  var pattern2 = { group: '123', userId: 'DEF' }
+  var payloadOne = drain(function (msg, done) { done() })
+  var payloadTwo = drain(function (msg, done) { done() })
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.deepEqual(instance.list(), [payloadOne, payloadTwo])
+})
+
+test('listing all patterns', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123', userId: 'ABC' }
+  var pattern2 = { group: '123', userId: 'DEF' }
+  var payloadOne = drain(function (msg, done) { done() })
+  var payloadTwo = drain(function (msg, done) { done() })
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.deepEqual(instance.list(null, { patterns: true }), [pattern1, pattern2])
+})

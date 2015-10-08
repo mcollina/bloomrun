@@ -101,6 +101,7 @@ Options:
 Returns an iterator, which is an object with a `next` method. `next`
 will return the next pattern that matches the object or `null` if there
 are no more.
+If `obj` is null, all patterns/payload will be returned.
 
 Options:
  * `patterns: true`, if you want to retrieve only patterns, not
@@ -112,6 +113,7 @@ Options:
 
 Returns all patterns that matches the object. If a payload was provided
 this will be returned instead of the pattern.
+If `obj` is null, all patterns/payload will be returned.
 
 Options:
  * `patterns: true`, if you want to retrieve only patterns, not
