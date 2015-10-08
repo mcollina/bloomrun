@@ -97,13 +97,13 @@ BloomRun.prototype.remove = function (pattern, payload) {
   return this
 }
 
-BloomRun.prototype.lookup = function (pattern) {
-  var iterator = new Iterator(this, pattern)
+BloomRun.prototype.lookup = function (pattern, opts) {
+  var iterator = new Iterator(this, pattern, opts)
   return iterator.next()
 }
 
-BloomRun.prototype.list = function (pattern) {
-  var iterator = new Iterator(this, pattern)
+BloomRun.prototype.list = function (pattern, opts) {
+  var iterator = new Iterator(this, pattern, opts)
   var list = []
   var current = null
 

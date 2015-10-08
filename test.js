@@ -184,3 +184,52 @@ test('removing causes filters to be rebuilt', function (t) {
   t.equal(instance.lookup({ group: '123' }), secondPattern)
   t.deepEqual(instance.lookup({ userId: 'DCF' }), secondPattern)
 })
+
+test('patterns can be listed while using payloads', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123', userId: 'ABC' }
+  var pattern2 = { group: '123', userId: 'DEF' }
+  var payloadOne = drain(function (msg, done) { done() })
+  var payloadTwo = drain(function (msg, done) { done() })
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.deepEqual(instance.list({ group: '123' }, { patterns: true }), [pattern1, pattern2])
+})
+
+test('patterns can be looked up while using payloads', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123', userId: 'ABC' }
+  var pattern2 = { group: '123', userId: 'DEF' }
+  var payloadOne = drain(function (msg, done) { done() })
+  var payloadTwo = drain(function (msg, done) { done() })
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.equal(instance.lookup({ group: '123' }, { patterns: true }), pattern1)
+})
+
+test('iterators can be used to fetch only patterns', function (t) {
+  t.plan(3)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123', userId: 'ABC' }
+  var pattern2 = { group: '123', userId: 'DEF' }
+  var payloadOne = drain(function (msg, done) { done() })
+  var payloadTwo = drain(function (msg, done) { done() })
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  var iterator = instance.iterator({ group: '123' }, { patterns: true })
+
+  t.equal(iterator.next(), pattern1)
+  t.equal(iterator.next(), pattern2)
+  t.equal(iterator.next(), null)
+})
