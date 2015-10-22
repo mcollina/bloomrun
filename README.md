@@ -126,6 +126,8 @@ This library is heavily inspired by Richard Rodger's
 Also, It would not be possible without
 [bloomfilter](https://www.npmjs.com/package/bloomfilter).
 
+The bloomrun logo was created, with thanks, by [Dean McDonnell](https:/github.com/mcdonnelldean)
+
 ## License
 
 Copyright Matteo Collina 2015, Licensed under [MIT][].
