@@ -35,6 +35,23 @@ test('payload is returned instead of pattern if it exists', function (t) {
   t.deepEqual(instance.lookup(pattern), payload)
 })
 
+test('deep pattern matching', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern = { role: 'sum', tnx: { side: 'buy' } }
+  var payload = '1234'
+
+  instance.add(pattern, payload)
+
+  t.deepEqual(instance.lookup({
+    role: 'sum',
+    tnx: {
+      side: 'buy'
+    }
+  }), payload)
+})
+
 test('functions are supported as payloads', function (t) {
   t.plan(1)
 
