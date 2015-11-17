@@ -25,20 +25,20 @@ npm install bloomrun --save
 <a name="example"></a>
 ## Example
 The example below can be found [here][example] and ran using `node example.js`. It
-demonstrates how to use bloomrun for pattern matching with or without a payload.
+demonstrates how to use bloomrun for pattern matching with a payload.
 
 ```js
 'use strict'
 
 var bloomrun = require('bloomrun')()
 
-bloomrun.add({say: 'hello', msg: 'Hello World!'})
+bloomrun.add({say: 'hello' }, 'Hello World!')
 bloomrun.add({say: 'goodbye'}, function () {
   console.log('Goodbye World!')
 })
 
 var hello = bloomrun.lookup({say: 'hello'})
-console.log(hello.msg)
+console.log(hello)
 
 var goodbye = bloomrun.lookup({say: 'goodbye'})
 goodbye()
