@@ -47,7 +47,7 @@ test('functions are supported as payloads', function (t) {
   t.deepEqual(instance.lookup(pattern)(), payload())
 })
 
-test('partial matching is supported', function (t) {
+test('partial matching should not be supported', function (t) {
   t.plan(2)
 
   var instance = bloomrun()
@@ -58,8 +58,23 @@ test('partial matching is supported', function (t) {
 
   instance.add(pattern)
 
-  t.deepEqual(instance.lookup({ cmd: 'add-user' }), pattern)
-  t.deepEqual(instance.lookup({ username: 'mcollina' }), pattern)
+  t.notOk(instance.lookup({ cmd: 'add-user' }))
+  t.notOk(instance.lookup({ username: 'mcollina' }))
+})
+
+// see https://github.com/mcollina/bloomrun/issues/18
+test('do not match if not fully matching - #18', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+
+  instance.add({ role: 'auth', cmd: 'login' }, 42)
+
+  instance.add({ role: 'auth', query: 'isAuthenticated' }, 24)
+
+  t.equal(instance.lookup({
+    role: 'auth', query: 'isAuthenticated'
+  }), 24)
 })
 
 test('multiple matches is supported', function (t) {
@@ -78,23 +93,24 @@ test('multiple matches is supported', function (t) {
   instance.add(firstPattern)
   instance.add(secondPattern)
 
-  t.deepEqual(instance.list({ group: '123' }), [firstPattern, secondPattern])
+  t.deepEqual(instance.list({ group: '123', userId: 'ABC' }), [firstPattern, secondPattern])
 })
 
 test('iterator based retrieval is supported', function (t) {
   t.plan(3)
 
   var instance = bloomrun()
-  var firstPattern = { hello: 'world', answer: '42' }
-  var secondPattern = { hello: 'world', name: 'matteo' }
+  var pattern1 = { hello: 'world' }
+  var pattern2 = { hello: 'world' }
 
-  instance.add(firstPattern)
-  instance.add(secondPattern)
+  instance.add(pattern1)
+  instance.add(pattern2)
 
   var iterator = instance.iterator({ hello: 'world' })
 
-  t.deepEqual(iterator.next(), firstPattern)
-  t.deepEqual(iterator.next(), secondPattern)
+  t.equal(iterator.next(), pattern1)
+  t.equal(iterator.next(), pattern2)
+
   t.notOk(iterator.next())
 })
 
@@ -102,7 +118,7 @@ test('removing patterns is supported', function (t) {
   t.plan(2)
 
   var instance = bloomrun()
-  var pattern = { group: '123', userId: 'ABC' }
+  var pattern = { group: '123' }
 
   instance.add(pattern)
 
@@ -117,7 +133,7 @@ test('remove deletes all matches', function (t) {
   t.plan(2)
 
   var instance = bloomrun()
-  var pattern = { group: '123', userId: 'ABC' }
+  var pattern = { group: '123' }
 
   instance.add(pattern)
   instance.add(pattern, 'TEST')
@@ -133,7 +149,7 @@ test('payload is considered when removing', function (t) {
   t.plan(2)
 
   var instance = bloomrun()
-  var pattern = { group: '123', userId: 'ABC' }
+  var pattern = { group: '123' }
 
   instance.add(pattern, 'XYZ')
   instance.add(pattern, '567')
@@ -149,7 +165,7 @@ test('complex payloads are matched correctly', function (t) {
   t.plan(2)
 
   var instance = bloomrun()
-  var pattern = { group: '123', userId: 'ABC' }
+  var pattern = { group: '123' }
 
   function payloadOne () { }
   function payloadTwo () { }
@@ -167,46 +183,43 @@ test('complex payloads are matched correctly', function (t) {
 })
 
 test('removing causes filters to be rebuilt', function (t) {
-  t.plan(4)
+  t.plan(2)
 
   var instance = bloomrun()
-  var firstPattern = { group: '123', userId: 'ABC' }
-  var secondPattern = { group: '123', userId: 'DCF' }
+  var firstPattern = { group: '123' }
+  var secondPattern = { group: '123' }
 
-  instance.add(firstPattern)
-  instance.add(secondPattern)
+  instance.add(firstPattern, 42)
+  instance.add(secondPattern, 24)
 
-  t.deepEqual(instance.lookup({ group: '123' }), firstPattern)
-  t.deepEqual(instance.lookup({ userId: 'DCF' }), secondPattern)
+  t.equal(instance.lookup({ group: '123' }), 42)
 
-  instance.remove(firstPattern)
+  instance.remove(firstPattern, 42)
 
-  t.equal(instance.lookup({ group: '123' }), secondPattern)
-  t.deepEqual(instance.lookup({ userId: 'DCF' }), secondPattern)
+  t.equal(instance.lookup({ group: '123' }), 24)
 })
 
 test('patterns can be listed while using payloads', function (t) {
   t.plan(1)
 
   var instance = bloomrun()
-  var pattern1 = { group: '123', userId: 'ABC' }
-  var pattern2 = { group: '123', userId: 'DEF' }
+  var pattern = { group: '123' }
 
   function payloadOne () { }
   function payloadTwo () { }
 
-  instance.add(pattern1, payloadOne)
-  instance.add(pattern2, payloadTwo)
+  instance.add(pattern, payloadOne)
+  instance.add(pattern, payloadTwo)
 
-  t.deepEqual(instance.list({ group: '123' }, { patterns: true }), [pattern1, pattern2])
+  t.deepEqual(instance.list({ group: '123' }, { patterns: true }), [pattern, pattern])
 })
 
 test('patterns can be looked up while using payloads', function (t) {
   t.plan(1)
 
   var instance = bloomrun()
-  var pattern1 = { group: '123', userId: 'ABC' }
-  var pattern2 = { group: '123', userId: 'DEF' }
+  var pattern1 = { group: '123' }
+  var pattern2 = { group: '123' }
 
   function payloadOne () { }
   function payloadTwo () { }
@@ -221,8 +234,8 @@ test('iterators can be used to fetch only patterns', function (t) {
   t.plan(3)
 
   var instance = bloomrun()
-  var pattern1 = { group: '123', userId: 'ABC' }
-  var pattern2 = { group: '123', userId: 'DEF' }
+  var pattern1 = { group: '123' }
+  var pattern2 = { group: '123' }
 
   function payloadOne () { }
   function payloadTwo () { }
