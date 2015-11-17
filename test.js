@@ -47,7 +47,8 @@ test('deep pattern matching', function (t) {
   t.deepEqual(instance.lookup({
     role: 'sum',
     tnx: {
-      side: 'buy'
+      side: 'buy',
+      amount: 100
     }
   }), payload)
 })
