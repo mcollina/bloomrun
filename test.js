@@ -35,6 +35,30 @@ test('payload is returned instead of pattern if it exists', function (t) {
   t.deepEqual(instance.lookup(pattern), payload)
 })
 
+test('regexp support in the lookup', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern = { cmd: 'save', prefs: 'userId' }
+  var payload = '1234'
+
+  instance.add(pattern, payload)
+
+  t.deepEqual(instance.lookup({ cmd: 'save', prefs: /user.*/ }), payload)
+})
+
+test('regexp support in the pattern', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern = { cmd: 'save', prefs: /user.*/ }
+  var payload = '1234'
+
+  instance.add(pattern, payload)
+
+  t.deepEqual(instance.lookup({ cmd: 'save', prefs: 'userId' }), payload)
+})
+
 test('deep pattern matching', function (t) {
   t.plan(1)
 
