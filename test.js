@@ -323,3 +323,18 @@ test('listing all patterns', function (t) {
 
   t.deepEqual(instance.list(null, { patterns: true }), [pattern1, pattern2])
 })
+
+test('matching numbers', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+  var pattern = {
+    something: 'else',
+    answer: 42
+  }
+
+  instance.add(pattern)
+
+  t.deepEqual(instance.lookup(pattern), pattern)
+  t.deepEqual(instance.list(pattern), [pattern])
+})

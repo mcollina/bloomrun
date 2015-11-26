@@ -26,7 +26,8 @@ var threeEntries = (function () {
 
   function threeEntries (done) {
     var result = instance.lookup({
-      something: 'else'
+      something: 'else',
+      answer: 42
     })
     if (!result) {
       throw new Error('muahah')
@@ -60,7 +61,8 @@ var fiveHundredEntries = (function () {
 
   function fiveHundredEntries (done) {
     var result = instance.lookup({
-      bigCounter: '99'
+      bigCounter: '99',
+      small3: 99
     })
     if (!result) {
       throw new Error('muahah')
@@ -78,6 +80,7 @@ var fiveHundredEntriesAndProperties = (function () {
   function fiveHundredEntriesAndProperties (done) {
     var result = instance.lookup({
       bigCounter: '99',
+      small3: 99,
       something: 'else'
     })
     if (!result) {
@@ -96,7 +99,7 @@ var fiveHundredEntriesAndKnownProperties = (function () {
   function fiveHundredEntriesAndKnownProperties (done) {
     var result = instance.lookup({
       bigCounter: '99',
-      small4: '99'
+      small4: 99
     })
     if (!result) {
       throw new Error('muahah')
@@ -145,7 +148,8 @@ var patrunThreeEntries = (function () {
 
   function patrunThreeEntries (done) {
     var result = instance.list({
-      something: 'else'
+      something: 'else',
+      answer: 42
     })
     if (!result) {
       throw new Error('muahah')
