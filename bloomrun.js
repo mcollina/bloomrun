@@ -6,6 +6,7 @@ var PatternSet = require('./lib/patternSet')
 var genKeys = require('./lib/genKeys')
 var matchingBuckets = require('./lib/matchingBuckets')
 var deepMatch = require('./lib/deepMatch')
+var deepSort = require('./lib/deepSort')
 var Set = require('es6-set')
 
 function BloomRun (opts) {
@@ -13,6 +14,7 @@ function BloomRun (opts) {
     return new BloomRun(opts)
   }
 
+  this._isDeep = opts && opts.indexing === 'depth'
   this._buckets = []
   this._properties = new Set()
 }
@@ -71,8 +73,12 @@ BloomRun.prototype.add = function (pattern, payload) {
     properties.add(key)
   })
 
-  var patternSet = new PatternSet(pattern, payload)
+  var patternSet = new PatternSet(pattern, payload, this._isDeep)
   bucket.data.push(patternSet)
+
+  if (this._isDeep) {
+    bucket.data.sort(deepSort)
+  }
 
   return this
 }
