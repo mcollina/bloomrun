@@ -119,7 +119,7 @@ test('do not match if not fully matching - #18', function (t) {
   }), 24)
 })
 
-test('multiple matches is supported', function (t) {
+test('multiple matches are supported', function (t) {
   t.plan(1)
 
   var instance = bloomrun()
@@ -337,4 +337,65 @@ test('matching numbers', function (t) {
 
   t.deepEqual(instance.lookup(pattern), pattern)
   t.deepEqual(instance.list(pattern), [pattern])
+})
+
+test('order support', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern1 = { group: '123' }
+  var pattern2 = { group: '123', another: 'value' }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.equal(instance.lookup({ group: '123', another: 'value' }), payloadOne)
+})
+
+test('depth support', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun({ indexing: 'depth' })
+  var pattern1 = { group: '123' }
+  var pattern2 = { group: '123', another: 'value' }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.equal(instance.lookup({ group: '123', another: 'value' }), payloadTwo)
+})
+
+test('recursive depth support', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun({ indexing: 'depth' })
+  var pattern1 = { group: '123', some: { key: 'value' } }
+  var pattern2 = {
+    group: '123',
+    some: {
+      key: 'value',
+      a: 'b'
+    }
+  }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.equal(instance.lookup({
+    group: '123',
+    some: {
+      key: 'value',
+      a: 'b',
+      c: 'd'
+    }
+  }), payloadTwo)
 })

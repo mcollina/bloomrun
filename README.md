@@ -6,7 +6,7 @@
 [![npm][npm-badge]][npm-url]
 
 A js pattern matcher based on bloom filters, inspired by [patrun](http://npm.im/patrun).
-But different: 10x faster, and with results returned in __insertion order__.
+But different: 10x faster, and with results that can be returned in __insertion order__ or __depth order__.
 
 * [Install](#install)
 * [Example](#example)
@@ -56,9 +56,16 @@ goodbye()
 
 -------------------------------------------------------
 <a name="constructor"></a>
-### bloomrun()
+### bloomrun([opts])
 
 Creates a new instance of Bloomrun.
+
+Options are:
+
+* `indexing`: it can be either `insertion` (default) or `depth`;
+  if set to `insertion`, it will try to match entries in insertion order;
+  if set to `depth`, it will try to match entries with the most
+  properties first.
 
 -------------------------------------------------------
 <a name="add"></a>
