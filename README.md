@@ -1,9 +1,11 @@
 [![logo][logo-url]][npm-url]
 
 # bloomrun
-[![travis][travis-badge]][travis-url]
 [![git][git-badge]][git-url]
 [![npm][npm-badge]][npm-url]
+[![travis][travis-badge]][travis-url]
+[![coveralls][coveralls-badge]][coveralls-url]
+[![david][david-badge]][david-url]
 
 A js pattern matcher based on bloom filters, inspired by [patrun](http://npm.im/patrun).
 But different: 10x faster, and with results that can be returned in __insertion order__ or __depth order__.
@@ -149,3 +151,7 @@ Copyright Matteo Collina 2015, Licensed under [MIT][].
 [npm-badge]: https://img.shields.io/npm/v/bloomrun.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/bloomrun
 [logo-url]: https://rawgit.com/mcollina/bloomrun/master/assets/bloomrun.svg
+[coveralls-badge]: https://img.shields.io/coveralls/mcollina/bloomrun/badge.svg?branch=master&service=github&style=flat-square
+[coveralls-url]: https://coveralls.io/github/mcollina/bloomrun?branch=master
+[david-badge]: https://david-dm.org/mcollina/bloomrun.svg?style=flat-square
+[david-url]: https://david-dm.org/mcollina/bloomrun
