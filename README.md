@@ -139,7 +139,7 @@ The bloomrun logo was created, with thanks, by [Dean McDonnell](https:/github.co
 
 ## License
 
-Copyright Matteo Collina 2015, Licensed under [MIT][].
+Copyright Matteo Collina 2015-2016, Licensed under [MIT][].
 
 [MIT]: ./LICENSE
 [example]: ./example.js
