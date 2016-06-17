@@ -7,7 +7,6 @@ var genKeys = require('./lib/genKeys')
 var matchingBuckets = require('./lib/matchingBuckets')
 var deepMatch = require('./lib/deepMatch')
 var deepSort = require('./lib/deepSort')
-var Set = require('es6-set')
 
 function BloomRun (opts) {
   if (!(this instanceof BloomRun)) {
