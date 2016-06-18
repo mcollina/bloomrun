@@ -4,6 +4,7 @@
   "description": "JS object pattern matching, powered by bloom filters",
   "main": "bloomrun.js",
   "scripts": {
+    "bench": "node bench.js",
     "lint": "standard",
     "test": "tape test.js | faucet",
     "coverage": "istanbul cover tape test.js; cat coverage/lcov.info | coveralls"
