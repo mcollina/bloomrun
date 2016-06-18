@@ -16,6 +16,7 @@ function BloomRun (opts) {
   this._isDeep = opts && opts.indexing === 'depth'
   this._buckets = []
   this._properties = new Set()
+  this._defaultResult = null
 }
 
 function addPatterns (toAdd) {
@@ -56,6 +57,10 @@ function removeProperty (key) {
 }
 
 BloomRun.prototype.add = function (pattern, payload) {
+  if (Object.keys(pattern).length === 0 && pattern.constructor === Object) {
+    this._defaultResult = payload || payload
+  }
+
   var buckets = matchingBuckets(this._buckets, pattern)
   var bucket
   var properties = this._properties
@@ -104,7 +109,7 @@ BloomRun.prototype.remove = function (pattern, payload) {
 
 BloomRun.prototype.lookup = function (pattern, opts) {
   var iterator = new Iterator(this, pattern, opts)
-  return iterator.next()
+  return iterator.next() || this._defaultResult
 }
 
 BloomRun.prototype.list = function (pattern, opts) {

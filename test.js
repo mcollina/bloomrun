@@ -25,6 +25,18 @@ test('pattern is returned on match', function (t) {
   t.deepEqual(instance.lookup(pattern), pattern)
 })
 
+test('default match is supported', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern = {}
+  var payload = { cmd: 'set-policy' }
+
+  instance.add(pattern, payload)
+
+  t.deepEqual(instance.lookup({foo: 'bar'}), payload)
+})
+
 test('payload is returned instead of pattern if it exists', function (t) {
   t.plan(1)
 
