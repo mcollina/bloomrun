@@ -4,12 +4,14 @@ var test = require('tape')
 var bloomrun = require('./')
 
 test('null is returned if pattern is not found', function (t) {
-  t.plan(1)
+  t.plan(3)
 
   var instance = bloomrun()
   var pattern = { cmd: 'set-policy' }
 
   t.equal(instance.lookup(pattern), null)
+  t.equal(instance.lookup([]), null)
+  t.equal(instance.lookup(new Date()), null)
 })
 
 test('pattern is returned on match', function (t) {
