@@ -7,6 +7,7 @@ var genKeys = require('./lib/genKeys')
 var matchingBuckets = require('./lib/matchingBuckets')
 var deepMatch = require('./lib/deepMatch')
 var deepSort = require('./lib/deepSort')
+var onlyRegex = require('./lib/onlyRegex')
 
 function BloomRun (opts) {
   if (!(this instanceof BloomRun)) {
@@ -15,6 +16,7 @@ function BloomRun (opts) {
 
   this._isDeep = opts && opts.indexing === 'depth'
   this._buckets = []
+  this._regexBucket = {data: []}
   this._properties = new Set()
   this._defaultResult = null
 }
@@ -56,9 +58,14 @@ function removeProperty (key) {
   this.delete(key)
 }
 
+BloomRun.prototype.default = function (payload) {
+  this._defaultResult = payload || payload
+}
+
 BloomRun.prototype.add = function (pattern, payload) {
-  if (Object.keys(pattern).length === 0 && pattern.constructor === Object) {
-    this._defaultResult = payload || payload
+  if (onlyRegex(pattern)) {
+    this._regexBucket.data.push(new PatternSet(pattern, payload, this._isDeep))
+    return this
   }
 
   var buckets = matchingBuckets(this._buckets, pattern)
@@ -109,7 +116,7 @@ BloomRun.prototype.remove = function (pattern, payload) {
 
 BloomRun.prototype.lookup = function (pattern, opts) {
   var iterator = new Iterator(this, pattern, opts)
-  return iterator.next() || this._defaultResult
+  return iterator.next() || this._defaultResult || null
 }
 
 BloomRun.prototype.list = function (pattern, opts) {
