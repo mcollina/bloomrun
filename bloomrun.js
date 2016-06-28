@@ -59,7 +59,7 @@ function removeProperty (key) {
 }
 
 BloomRun.prototype.default = function (payload) {
-  this._defaultResult = payload || payload
+  this._defaultResult = payload
 }
 
 BloomRun.prototype.add = function (pattern, payload) {
