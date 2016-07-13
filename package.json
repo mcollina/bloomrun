@@ -24,7 +24,7 @@
     "bloomfilter": "0.0.16"
   },
   "devDependencies": {
-    "coveralls": "^2.11.6",
+    "coveralls": "^2.11.11",
     "fastbench": "^1.0.0",
     "faucet": "0.0.1",
     "istanbul": "^0.4.1",
