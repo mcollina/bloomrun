@@ -54,6 +54,7 @@ goodbye()
   * <a href="#lookup"><code>instance.<b>lookup()</b></code></a>
   * <a href="#iterator"><code>instance.<b>iterator()</b></code></a>
   * <a href="#list"><code>instance.<b>list()</b></code></a>
+  * <a href="#default"><code>instance.<b>default()</b></code></a>
 
 -------------------------------------------------------
 <a name="constructor"></a>
@@ -127,6 +128,17 @@ Options:
  * `patterns: true`, if you want to retrieve only patterns, not
    payloads
 
+-------------------------------------------------------
+
+<a name="default"></a>
+### instance.default(payload)
+
+Sets a default payload to be returned when no pattern is matched. This
+allows a single 'catch all' to be defined. By default, null is returned
+when a pattern is not matched.
+
+-------------------------------------------------------
+
 ## Acknowledgements
 
 This library is heavily inspired by Richard Rodger's
@@ -135,6 +147,8 @@ Also, It would not be possible without
 [bloomfilter](https://www.npmjs.com/package/bloomfilter).
 
 The bloomrun logo was created, with thanks, by [Dean McDonnell](https:/github.com/mcdonnelldean)
+
+
 
 ## License
 
