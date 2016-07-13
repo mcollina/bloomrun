@@ -1,7 +1,6 @@
 [![logo][logo-url]][npm-url]
 
 # bloomrun
-[![git][git-badge]][git-url]
 [![npm][npm-badge]][npm-url]
 [![travis][travis-badge]][travis-url]
 [![coveralls][coveralls-badge]][coveralls-url]
@@ -144,14 +143,12 @@ Copyright Matteo Collina 2015-2016, Licensed under [MIT][].
 [MIT]: ./LICENSE
 [example]: ./example.js
 
-[travis-badge]: https://img.shields.io/travis/mcollina/bloomrun.svg?style=flat-square
+[travis-badge]: https://travis-ci.org/mcollina/bloomrun.svg?branch=master
 [travis-url]: https://travis-ci.org/mcollina/bloomrun
-[git-badge]: https://img.shields.io/github/release/mcollina/bloomrun.svg?style=flat-square
-[git-url]: https://github.com/mcollina/bloomrun/releases
-[npm-badge]: https://img.shields.io/npm/v/bloomrun.svg?style=flat-square
+[npm-badge]: https://badge.fury.io/js/bloomrun.svg
 [npm-url]: https://npmjs.org/package/bloomrun
-[logo-url]: https://rawgit.com/mcollina/bloomrun/master/assets/bloomrun.svg
-[coveralls-badge]: https://img.shields.io/coveralls/mcollina/bloomrun/badge.svg?branch=master&service=github&style=flat-square
+[logo-url]: https://raw.githubusercontent.com/mcollina/bloomrun/master/assets/bloomrun.png
+[coveralls-badge]: https://coveralls.io/repos/mcollina/bloomrun/badge.svg?branch=master&service=github
 [coveralls-url]: https://coveralls.io/github/mcollina/bloomrun?branch=master
-[david-badge]: https://david-dm.org/mcollina/bloomrun.svg?style=flat-square
+[david-badge]: https://david-dm.org/mcollina/bloomrun.svg
 [david-url]: https://david-dm.org/mcollina/bloomrun
