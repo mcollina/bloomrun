@@ -25,6 +25,17 @@ test('pattern is returned on match', function (t) {
   t.deepEqual(instance.lookup(pattern), pattern)
 })
 
+test('default match is supported', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var payload = { cmd: 'set-policy' }
+
+  instance.default(payload)
+
+  t.deepEqual(instance.lookup({foo: 'bar'}), payload)
+})
+
 test('payload is returned instead of pattern if it exists', function (t) {
   t.plan(1)
 
@@ -41,6 +52,18 @@ test('regexp support in the lookup', function (t) {
   t.plan(1)
 
   var instance = bloomrun()
+  var pattern = { prefs: 'userId' }
+  var payload = '1234'
+
+  instance.add(pattern, payload)
+
+  t.deepEqual(instance.lookup({ prefs: /user.*/ }), payload)
+})
+
+test('regexp plus props support in the lookup', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
   var pattern = { cmd: 'save', prefs: 'userId' }
   var payload = '1234'
 
@@ -50,6 +73,18 @@ test('regexp support in the lookup', function (t) {
 })
 
 test('regexp support in the pattern', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern = { prefs: /user.*/ }
+  var payload = '1234'
+
+  instance.add(pattern, payload)
+
+  t.deepEqual(instance.lookup({ prefs: 'userId' }), payload)
+})
+
+test('regexp plus props support in the pattern', function (t) {
   t.plan(1)
 
   var instance = bloomrun()
