@@ -436,3 +436,21 @@ test('recursive depth support', function (t) {
     }
   }), payloadTwo)
 })
+
+test('boolean matching', function (t) {
+  t.plan(5)
+
+  var instance = bloomrun()
+  var s1 = { say: true }
+  var s2 = { say: false }
+
+  instance.add(s1)
+  instance.add(s2)
+  instance.default('Global')
+
+  t.deepEqual(instance.lookup({ say: true }), s1, 'copied equivalence on s1')
+  t.deepEqual(instance.lookup(s1), s1, '=== equivalence on s1')
+  t.deepEqual(instance.lookup({ say: false }), s2, 'copied equivalence on s2')
+  t.deepEqual(instance.lookup(s2), s2, '=== equivalence on s2')
+  t.deepEqual(instance.lookup({ hello: 'world' }), 'Global')
+})
