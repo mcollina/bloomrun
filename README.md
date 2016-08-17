@@ -17,6 +17,7 @@ But different: 10x faster, and with results that can be returned in __insertion 
 
 <a name="install"></a>
 ## Install
+
 To install bloomrun, simply use npm:
 
 ```
@@ -25,6 +26,7 @@ npm install bloomrun --save
 
 <a name="example"></a>
 ## Example
+
 The example below can be found [here][example] and ran using `node example.js`. It
 demonstrates how to use bloomrun for pattern matching with a payload.
 
@@ -54,6 +56,7 @@ goodbye()
   * <a href="#lookup"><code>instance.<b>lookup()</b></code></a>
   * <a href="#iterator"><code>instance.<b>iterator()</b></code></a>
   * <a href="#list"><code>instance.<b>list()</b></code></a>
+  * <a href="#default"><code>instance.<b>default()</b></code></a>
 
 -------------------------------------------------------
 <a name="constructor"></a>
@@ -127,14 +130,29 @@ Options:
  * `patterns: true`, if you want to retrieve only patterns, not
    payloads
 
+-------------------------------------------------------
+
+<a name="default"></a>
+### instance.default(payload)
+
+Sets a default payload to be returned when no pattern is matched. This
+allows a single 'catch all' to be defined. By default, null is returned
+when a pattern is not matched.
+
+-------------------------------------------------------
+
 ## Acknowledgements
 
+This project was kindly sponsored by [nearForm](http://nearform.com).
+
 This library is heavily inspired by Richard Rodger's
-[patrun](http://npm.im/patrun) and [seneca](http://npm.im/seneca).
-Also, It would not be possible without
+[patrun](http://npm.im/patrun) and [Seneca](http://npm.im/seneca).
+
+Bloomrun would not be possible without
 [bloomfilter](https://www.npmjs.com/package/bloomfilter).
 
 The bloomrun logo was created, with thanks, by [Dean McDonnell](https:/github.com/mcdonnelldean)
+
 
 ## License
 
