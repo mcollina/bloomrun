@@ -454,3 +454,22 @@ test('boolean matching', function (t) {
   t.deepEqual(instance.lookup(s2), s2, '=== equivalence on s2')
   t.deepEqual(instance.lookup({ hello: 'world' }), 'Global')
 })
+
+test('mad string equality', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+
+  instance.add({
+    to: '1',
+    some: 'pattern'
+  }, 'first')
+
+  instance.add({
+    to: '2',
+    some: 'pattern'
+  }, 'second')
+
+  t.deepEqual(instance.lookup({ to: '1', some: 'pattern' }), 'first')
+  t.deepEqual(instance.lookup({ to: '2', some: 'pattern' }), 'second')
+})
