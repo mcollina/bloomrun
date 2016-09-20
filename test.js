@@ -478,23 +478,43 @@ test('List matches partially, regardless of key order (1)', function (t) {
   t.plan(1)
   var instance = bloomrun({ indexing: 'depth' })
 
+  // first bucket
   instance.add({ c: 'CCC' }, 1)
+  // second bucket
   instance.add({ b: 'BBB' }, 2)
+  // first bucket
   instance.add({ a: 'AAA', b: 'BBB', c: 'CCC' }, 3)
+  // first bucket
   instance.add({ a: 'AAA' }, 4)
 
-  t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [3, 1, 4, 2])
+  t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [
+    // first bucket matches
+    3,
+    1,
+    4,
+    // second bucket matches
+    2
+  ])
 })
 
 test('List matches partially, regardless of key order (2)', function (t) {
   t.plan(1)
   var instance = bloomrun({ indexing: 'depth' })
 
+  // this goes in the 1st bucket
   instance.add({ c: 'CCC' }, 2)
+  // and this one too
   instance.add({ c: 'CCC', d: 'DDD' }, 1)
+  // this goes in the 2nd bucket
   instance.add({ a: 'AAA' }, 3)
 
-  t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [1, 2, 3])
+  t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [
+    // first bucket matches
+    1,
+    2,
+    // second bucket
+    3
+  ])
 })
 
 test('List matches partially, in key order (2)', function (t) {
@@ -505,5 +525,11 @@ test('List matches partially, in key order (2)', function (t) {
   instance.add({ c: 'CCC', d: 'DDD' }, 1)
   instance.add({ a: 'AAA' }, 3)
 
-  t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [2, 1, 3])
+  t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [
+    // first bucket matches
+    2,
+    1,
+    // second bucket matches
+    3
+  ])
 })
