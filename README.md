@@ -69,7 +69,9 @@ Options are:
 * `indexing`: it can be either `insertion` (default) or `depth`;
   if set to `insertion`, it will try to match entries in insertion order;
   if set to `depth`, it will try to match entries with the most
-  properties first.
+  properties first. Depth indexing is guaranteed if the patterns
+overlaps. If multiple matching patterns overlaps it checks on the
+first overlapping group of patterns that matches.
 
 -------------------------------------------------------
 <a name="add"></a>

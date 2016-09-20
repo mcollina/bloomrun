@@ -473,3 +473,26 @@ test('mad string equality', function (t) {
   t.deepEqual(instance.lookup({ to: '1', some: 'pattern' }), 'first')
   t.deepEqual(instance.lookup({ to: '2', some: 'pattern' }), 'second')
 })
+
+test('List matches partially, regardless of key order (1)', function (t) {
+  t.plan(1)
+  var instance = bloomrun({ indexing: 'depth' })
+
+  instance.add({ c: 'CCC' }, 1)
+  instance.add({ b: 'BBB' }, 2)
+  instance.add({ a: 'AAA', b: 'BBB', c: 'CCC' }, 3)
+  instance.add({ a: 'AAA' }, 4)
+
+  t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [3, 1, 4, 2])
+})
+
+test('List matches partially, regardless of key order (2)', function (t) {
+  t.plan(1)
+  var instance = bloomrun({ indexing: 'depth' })
+
+  instance.add({ c: 'CCC' }, 2)
+  instance.add({ c: 'CCC', d: 'DDD' }, 1)
+  instance.add({ a: 'AAA' }, 3)
+
+  t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [1, 2, 3])
+})

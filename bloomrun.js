@@ -68,7 +68,7 @@ BloomRun.prototype.add = function (pattern, payload) {
     return this
   }
 
-  var buckets = matchingBuckets(this._buckets, pattern)
+  var buckets = matchingBuckets(this._buckets, pattern, null, this._isDeep)
   var bucket
   var properties = this._properties
 
@@ -95,7 +95,7 @@ BloomRun.prototype.add = function (pattern, payload) {
 }
 
 BloomRun.prototype.remove = function (pattern, payload) {
-  var matches = matchingBuckets(this._buckets, pattern)
+  var matches = matchingBuckets(this._buckets, pattern, null, this._isDeep)
   payload = payload || null
 
   if (matches.length > 0) {
