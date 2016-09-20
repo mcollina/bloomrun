@@ -496,3 +496,14 @@ test('List matches partially, regardless of key order (2)', function (t) {
 
   t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [1, 2, 3])
 })
+
+test('List matches partially, in key order (2)', function (t) {
+  t.plan(1)
+  var instance = bloomrun()
+
+  instance.add({ c: 'CCC' }, 2)
+  instance.add({ c: 'CCC', d: 'DDD' }, 1)
+  instance.add({ a: 'AAA' }, 3)
+
+  t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [2, 1, 3])
+})

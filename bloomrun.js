@@ -17,7 +17,6 @@ function BloomRun (opts) {
   this._isDeep = opts && opts.indexing === 'depth'
   this._buckets = []
   this._regexBucket = {data: []}
-  this._properties = new Set()
   this._defaultResult = null
 }
 
@@ -54,10 +53,6 @@ function removeBucket (buckets, bucket) {
   }
 }
 
-function removeProperty (key) {
-  this.delete(key)
-}
-
 BloomRun.prototype.default = function (payload) {
   this._defaultResult = payload
 }
@@ -68,9 +63,8 @@ BloomRun.prototype.add = function (pattern, payload) {
     return this
   }
 
-  var buckets = matchingBuckets(this._buckets, pattern, null, this._isDeep)
+  var buckets = matchingBuckets(this._buckets, pattern)
   var bucket
-  var properties = this._properties
 
   if (buckets.length > 0) {
     bucket = buckets[0]
@@ -80,9 +74,6 @@ BloomRun.prototype.add = function (pattern, payload) {
   }
 
   genKeys(pattern).forEach(addPatterns, bucket)
-  Object.keys(pattern).forEach(function (key) {
-    properties.add(key)
-  })
 
   var patternSet = new PatternSet(pattern, payload, this._isDeep)
   bucket.data.push(patternSet)
@@ -95,7 +86,7 @@ BloomRun.prototype.add = function (pattern, payload) {
 }
 
 BloomRun.prototype.remove = function (pattern, payload) {
-  var matches = matchingBuckets(this._buckets, pattern, null, this._isDeep)
+  var matches = matchingBuckets(this._buckets, pattern)
   payload = payload || null
 
   if (matches.length > 0) {
@@ -104,8 +95,6 @@ BloomRun.prototype.remove = function (pattern, payload) {
 
       if (removePattern(bucket, pattern, payload)) {
         removeBucket(this._buckets, bucket)
-
-        Object.keys(pattern).forEach(removeProperty, this._properties)
         bucket.data.forEach(addPatternSet, this)
       }
     }
