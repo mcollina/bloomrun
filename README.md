@@ -35,16 +35,21 @@ demonstrates how to use bloomrun for pattern matching with a payload.
 
 var bloomrun = require('bloomrun')()
 
-bloomrun.add({say: 'hello' }, 'Hello World!')
+bloomrun.add({say: 'hello'}, 'Hello World!')
 bloomrun.add({say: 'goodbye'}, function () {
   console.log('Goodbye World!')
 })
+
+bloomrun.add({say: /.*/}, 'Matched with a regexp!')
 
 var hello = bloomrun.lookup({say: 'hello'})
 console.log(hello)
 
 var goodbye = bloomrun.lookup({say: 'goodbye'})
 goodbye()
+
+var anything = bloomrun.lookup({say: 'anything'})
+console.log(anything)
 ```
 
 <a name="api"></a>

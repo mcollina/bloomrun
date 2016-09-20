@@ -7,8 +7,13 @@ bloomrun.add({say: 'goodbye'}, function () {
   console.log('Goodbye World!')
 })
 
+bloomrun.add({say: /.*/}, 'Matched with a regexp!')
+
 var hello = bloomrun.lookup({say: 'hello'})
 console.log(hello)
 
 var goodbye = bloomrun.lookup({say: 'goodbye'})
 goodbye()
+
+var anything = bloomrun.lookup({say: 'anything'})
+console.log(anything)
