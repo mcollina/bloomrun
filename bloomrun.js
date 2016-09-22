@@ -60,6 +60,11 @@ BloomRun.prototype.default = function (payload) {
 BloomRun.prototype.add = function (pattern, payload) {
   if (onlyRegex(pattern)) {
     this._regexBucket.data.push(new PatternSet(pattern, payload, this._isDeep))
+
+    if (this._isDeep) {
+      this._regexBucket.data.sort(deepSort)
+    }
+
     return this
   }
 

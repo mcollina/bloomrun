@@ -533,3 +533,21 @@ test('List matches partially, in key order (2)', function (t) {
     3
   ])
 })
+
+test('recursive depth support, no other keys', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun({ indexing: 'depth' })
+  var pattern1 = { some: { key: 'value' } }
+  var pattern2 = { some: { key: 'value', a: 'b' } }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern1, payloadOne)
+  instance.add(pattern2, payloadTwo)
+
+  t.equal(instance.lookup({
+    some: { key: 'value', a: 'b', c: 'd' }
+  }), payloadTwo)
+})
