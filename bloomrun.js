@@ -3,10 +3,7 @@
 var Bucket = require('./lib/bucket')
 var Iterator = require('./lib/iterator')
 var PatternSet = require('./lib/patternSet')
-var genKeys = require('./lib/genKeys')
 var matchingBuckets = require('./lib/matchingBuckets')
-var deepMatch = require('./lib/deepMatch')
-var deepSort = require('./lib/deepSort')
 var onlyRegex = require('./lib/onlyRegex')
 
 function BloomRun (opts) {
@@ -16,33 +13,38 @@ function BloomRun (opts) {
 
   this._isDeep = opts && opts.indexing === 'depth'
   this._buckets = []
-  this._regexBucket = {data: []}
+  this._regexBucket = new Bucket(this._isDeep)
   this._defaultResult = null
 }
 
-function addPatterns (toAdd) {
-  this.filter.add(toAdd)
+BloomRun.prototype.default = function (payload) {
+  this._defaultResult = payload
+}
+
+BloomRun.prototype.add = function (pattern, payload) {
+  if (onlyRegex(pattern)) {
+    this._regexBucket.add(new PatternSet(pattern, payload, this._isDeep))
+    return this
+  }
+
+  var buckets = matchingBuckets(this._buckets, pattern)
+  var bucket
+
+  if (buckets.length > 0) {
+    bucket = buckets[0]
+  } else {
+    bucket = new Bucket(this._isDeep)
+    this._buckets.push(bucket)
+  }
+
+  var patternSet = new PatternSet(pattern, payload, this._isDeep)
+  bucket.add(patternSet)
+
+  return this
 }
 
 function addPatternSet (patternSet) {
   this.add(patternSet.pattern, patternSet.payload)
-}
-
-function removePattern (bucket, pattern, payload) {
-  var foundPattern = false
-
-  for (var i = 0; i < bucket.data.length; i++) {
-    if (deepMatch(pattern, bucket.data[i].pattern)) {
-      if (payload === null || payload === bucket.data[i].payload) {
-        bucket.data.splice(i, 1)
-        foundPattern = true
-
-        removePattern(bucket, pattern, payload)
-      }
-    }
-  }
-
-  return foundPattern
 }
 
 function removeBucket (buckets, bucket) {
@@ -53,38 +55,6 @@ function removeBucket (buckets, bucket) {
   }
 }
 
-BloomRun.prototype.default = function (payload) {
-  this._defaultResult = payload
-}
-
-BloomRun.prototype.add = function (pattern, payload) {
-  if (onlyRegex(pattern)) {
-    this._regexBucket.data.push(new PatternSet(pattern, payload, this._isDeep))
-    return this
-  }
-
-  var buckets = matchingBuckets(this._buckets, pattern)
-  var bucket
-
-  if (buckets.length > 0) {
-    bucket = buckets[0]
-  } else {
-    bucket = new Bucket()
-    this._buckets.push(bucket)
-  }
-
-  genKeys(pattern).forEach(addPatterns, bucket)
-
-  var patternSet = new PatternSet(pattern, payload, this._isDeep)
-  bucket.data.push(patternSet)
-
-  if (this._isDeep) {
-    bucket.data.sort(deepSort)
-  }
-
-  return this
-}
-
 BloomRun.prototype.remove = function (pattern, payload) {
   var matches = matchingBuckets(this._buckets, pattern)
   payload = payload || null
@@ -93,9 +63,9 @@ BloomRun.prototype.remove = function (pattern, payload) {
     for (var i = 0; i < matches.length; i++) {
       var bucket = matches[i]
 
-      if (removePattern(bucket, pattern, payload)) {
+      if (bucket.remove(pattern, payload)) {
         removeBucket(this._buckets, bucket)
-        bucket.data.forEach(addPatternSet, this)
+        bucket.forEach(addPatternSet, this)
       }
     }
   }
