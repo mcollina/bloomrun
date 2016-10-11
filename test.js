@@ -551,3 +551,24 @@ test('recursive depth support, no other keys', function (t) {
     some: { key: 'value', a: 'b', c: 'd' }
   }), payloadTwo)
 })
+
+test('patterns and data can be listed while using payloads', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern = { group: '123' }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern, payloadOne)
+  instance.add(pattern, payloadTwo)
+
+  t.deepEqual(instance.list({ group: '123' }, { patterns: true, payloads: true }), [{
+    pattern: pattern,
+    payload: payloadOne
+  }, {
+    pattern: pattern,
+    payload: payloadTwo
+  }])
+})

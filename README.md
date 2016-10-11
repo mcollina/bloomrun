@@ -124,8 +124,20 @@ are no more.
 If `obj` is null, all patterns/payload will be returned.
 
 Options:
- * `patterns: true`, if you want to retrieve only patterns, not
-   payloads
+ * `patterns: true`, if you want to retrieve patterns, defaults to
+   `false`
+ * `payloads: true`, if you want to retrieve payloads, defaults to
+   `true`
+
+If both `patterns` and `payloads` are `true`, the data will be in the
+form:
+
+```js
+{
+  pattern,
+  payload
+}
+```
 
 -------------------------------------------------------
 <a name="list"></a>
@@ -136,8 +148,20 @@ this will be returned instead of the pattern.
 If `obj` is null, all patterns/payload will be returned.
 
 Options:
- * `patterns: true`, if you want to retrieve only patterns, not
-   payloads
+ * `patterns: true`, if you want to retrieve patterns, defaults to
+   `false`
+ * `payloads: true`, if you want to retrieve payloads, defaults to
+   `true`
+
+If both `patterns` and `payloads` are `true`, the data will be in the
+form:
+
+```js
+{
+  pattern,
+  payload
+}
+```
 
 -------------------------------------------------------
 
