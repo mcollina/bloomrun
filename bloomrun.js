@@ -87,6 +87,17 @@ BloomRun.prototype.list = function (pattern, opts) {
     list.push(current)
   }
 
+  if (!pattern && this._defaultResult) {
+    if (opts && opts.patterns && opts.payloads) {
+      list.push({
+        default: true,
+        payload: this._defaultResult
+      })
+    } else if (!opts || !opts.patterns) {
+      list.push(this._defaultResult)
+    }
+  }
+
   return list
 }
 

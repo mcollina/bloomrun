@@ -572,3 +572,19 @@ test('patterns and data can be listed while using payloads', function (t) {
     payload: payloadTwo
   }])
 })
+
+test('list should return the default', function (t) {
+  t.plan(3)
+
+  var instance = bloomrun()
+  var payload = { cmd: 'set-policy' }
+
+  instance.default(payload)
+
+  t.deepEqual(instance.list(), [payload])
+  t.deepEqual(instance.list(null, { patterns: true }), [])
+  t.deepEqual(instance.list(null, { patterns: true, payloads: true }), [{
+    default: true,
+    payload: payload
+  }])
+})

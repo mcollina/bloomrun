@@ -163,6 +163,17 @@ form:
 }
 ```
 
+If a `default` is set, it will be returned if `obj` is falsy. In case
+the `opts.patterns` is `true`, the element in the list will have the
+form:
+
+```js
+{
+  default: true,
+  payload
+}
+```
+
 -------------------------------------------------------
 
 <a name="default"></a>
