@@ -1,7 +1,7 @@
 'use strict'
 
 var bench = require('fastbench')
-var bloomrun = require('./')
+var bloomrun = require('../')
 var patrun = require('patrun')
 
 var threeEntries = (function () {
@@ -25,7 +25,7 @@ var threeEntries = (function () {
   return threeEntries
 
   function threeEntries (done) {
-    var result = instance.lookup({
+    var result = instance.list({
       something: 'else',
       answer: 42
     })
@@ -46,7 +46,7 @@ function buildFiveHundredEntries (instance) {
         bigCounter: '' + i
       }
       obj['small' + k] = i
-      instance.add(obj)
+      instance.add(obj, obj)
     }
   }
 
@@ -60,7 +60,7 @@ var fiveHundredEntries = (function () {
   return fiveHundredEntries
 
   function fiveHundredEntries (done) {
-    var result = instance.lookup({
+    var result = instance.list({
       bigCounter: '99',
       small3: 99
     })
@@ -78,7 +78,7 @@ var fiveHundredEntriesAndProperties = (function () {
   return fiveHundredEntriesAndProperties
 
   function fiveHundredEntriesAndProperties (done) {
-    var result = instance.lookup({
+    var result = instance.list({
       bigCounter: '99',
       small3: 99,
       something: 'else'
@@ -97,7 +97,7 @@ var fiveHundredEntriesAndKnownProperties = (function () {
   return fiveHundredEntriesAndKnownProperties
 
   function fiveHundredEntriesAndKnownProperties (done) {
-    var result = instance.lookup({
+    var result = instance.list({
       bigCounter: '99',
       small4: 99
     })
@@ -117,6 +117,7 @@ var patrunFiveHundredEntriesAndProperties = (function () {
   function patrunFiveHundredEntriesAndProperties (done) {
     var result = instance.list({
       bigCounter: '99',
+      small3: 99,
       something: 'else'
     })
     if (!result) {
@@ -132,17 +133,17 @@ var patrunThreeEntries = (function () {
   instance.add({
     hello: 'world',
     answer: 42
-  })
+  }, 'hello')
 
   instance.add({
     hello: 'matteo',
     answer: 42
-  })
+  }, 'hello')
 
   instance.add({
     something: 'else',
     answer: 42
-  })
+  }, 'hello')
 
   return patrunThreeEntries
 
