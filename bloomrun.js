@@ -1,44 +1,56 @@
 'use strict'
 
+var deepSort = require('./lib/deepSort')
+var insertionSort = require('./lib/insertionSort')
 var Bucket = require('./lib/bucket')
 var Iterator = require('./lib/iterator')
 var PatternSet = require('./lib/patternSet')
-var matchingBuckets = require('./lib/matchingBuckets')
 var onlyRegex = require('./lib/onlyRegex')
 
-function BloomRun (opts) {
-  if (!(this instanceof BloomRun)) {
-    return new BloomRun(opts)
+function Bloomrun (opts) {
+  if (!(this instanceof Bloomrun)) {
+    return new Bloomrun(opts)
   }
 
   this._isDeep = opts && opts.indexing === 'depth'
   this._buckets = []
-  this._regexBucket = new Bucket(this._isDeep)
+  this._regexBucket = new Bucket(this)
   this._defaultResult = null
+  this._tree = {}
+  this._algo = this._isDeep ? deepSort : insertionSort
 }
 
-BloomRun.prototype.default = function (payload) {
+Bloomrun.prototype.default = function (payload) {
   this._defaultResult = payload
 }
 
-BloomRun.prototype.add = function (pattern, payload) {
+Bloomrun.prototype.add = function (pattern, payload) {
   if (onlyRegex(pattern)) {
     this._regexBucket.add(new PatternSet(pattern, payload, this._isDeep))
     return this
   }
 
-  var buckets = matchingBuckets(this._buckets, pattern)
+  var patternSet = new PatternSet(pattern, payload, this._isDeep)
   var bucket
 
-  if (buckets.length > 0) {
-    bucket = buckets[0]
-  } else {
-    bucket = new Bucket(this._isDeep)
-    this._buckets.push(bucket)
-  }
+  for (var key in pattern) {
+    if (pattern.hasOwnProperty(key)) {
+      if (typeof pattern[key] !== 'object') {
+        if (!this._tree[key]) {
+          this._tree[key] = {}
+        }
+        bucket = this._tree[key][pattern[key]]
 
-  var patternSet = new PatternSet(pattern, payload, this._isDeep)
-  bucket.add(patternSet)
+        if (!bucket) {
+          bucket = new Bucket(this)
+          this._buckets.push(bucket)
+          this._tree[key][pattern[key]] = bucket
+        }
+
+        bucket.add(patternSet)
+      }
+    }
+  }
 
   return this
 }
@@ -51,21 +63,29 @@ function removeBucket (buckets, bucket) {
   for (var i = 0; i < buckets.length; i++) {
     if (bucket === buckets[i]) {
       buckets.splice(i, 1)
+      break
     }
   }
 }
 
-BloomRun.prototype.remove = function (pattern, payload) {
-  var matches = matchingBuckets(this._buckets, pattern)
+Bloomrun.prototype.remove = function (pattern, payload) {
+  var bucket = null
   payload = payload || null
 
-  if (matches.length > 0) {
-    for (var i = 0; i < matches.length; i++) {
-      var bucket = matches[i]
+  for (var key in pattern) {
+    if (pattern.hasOwnProperty(key)) {
+      if (typeof pattern[key] !== 'object') {
+        if (this._tree[key] && this._tree[key][pattern[key]]) {
+          bucket = this._tree[key][pattern[key]]
 
-      if (bucket.remove(pattern, payload)) {
-        removeBucket(this._buckets, bucket)
-        bucket.forEach(addPatternSet, this)
+          if (bucket.remove(pattern, payload)) {
+            removeBucket(this._buckets, bucket)
+            bucket.forEach(addPatternSet, this)
+            if (bucket.data.length === 0) {
+              delete this._tree[key][pattern[key]]
+            }
+          }
+        }
       }
     }
   }
@@ -73,13 +93,33 @@ BloomRun.prototype.remove = function (pattern, payload) {
   return this
 }
 
-BloomRun.prototype.lookup = function (pattern, opts) {
-  var iterator = new Iterator(this, pattern, opts)
-  return iterator.next() || this._defaultResult || null
+function onlyPatterns (current) {
+  return current.pattern
 }
 
-BloomRun.prototype.list = function (pattern, opts) {
-  var iterator = new Iterator(this, pattern, opts)
+function patternsAndPayloads (current) {
+  return {
+    pattern: current.pattern,
+    payload: current.payload
+  }
+}
+
+Bloomrun.prototype.lookup = function (pattern, opts) {
+  var asMatch = null
+  if (opts && opts.patterns) {
+    asMatch = opts.payloads ? patternsAndPayloads : onlyPatterns
+  }
+
+  var iterator = new Iterator(this, pattern, asMatch)
+  return iterator.one() || this._defaultResult || null
+}
+
+Bloomrun.prototype.list = function (pattern, opts) {
+  var asMatch = null
+  if (opts && opts.patterns) {
+    asMatch = opts.payloads ? patternsAndPayloads : onlyPatterns
+  }
+  var iterator = new Iterator(this, pattern, asMatch)
   var list = []
   var current = null
 
@@ -101,6 +141,12 @@ BloomRun.prototype.list = function (pattern, opts) {
   return list
 }
 
-BloomRun.prototype.iterator = Iterator
+Bloomrun.prototype.iterator = function (obj, opts) {
+  var asMatch = null
+  if (opts && opts.patterns) {
+    asMatch = opts.payloads ? patternsAndPayloads : onlyPatterns
+  }
+  return new Iterator(this, obj, asMatch)
+}
 
-module.exports = BloomRun
+module.exports = Bloomrun

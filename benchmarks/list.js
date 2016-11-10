@@ -1,11 +1,11 @@
 'use strict'
 
 var bench = require('fastbench')
-var bloomrun = require('./')
+var bloomrun = require('../')
 var patrun = require('patrun')
 
 var threeEntries = (function () {
-  var instance = bloomrun()
+  var instance = bloomrun({ indexing: 'depth' })
 
   instance.add({
     hello: 'world',
@@ -25,7 +25,7 @@ var threeEntries = (function () {
   return threeEntries
 
   function threeEntries (done) {
-    var result = instance.lookup({
+    var result = instance.list({
       something: 'else',
       answer: 42
     })
@@ -46,7 +46,7 @@ function buildFiveHundredEntries (instance) {
         bigCounter: '' + i
       }
       obj['small' + k] = i
-      instance.add(obj)
+      instance.add(obj, obj)
     }
   }
 
@@ -54,13 +54,13 @@ function buildFiveHundredEntries (instance) {
 }
 
 var fiveHundredEntries = (function () {
-  var instance = bloomrun()
+  var instance = bloomrun({ indexing: 'depth' })
   buildFiveHundredEntries(instance)
 
   return fiveHundredEntries
 
   function fiveHundredEntries (done) {
-    var result = instance.lookup({
+    var result = instance.list({
       bigCounter: '99',
       small3: 99
     })
@@ -72,34 +72,16 @@ var fiveHundredEntries = (function () {
 })()
 
 var fiveHundredEntriesAndProperties = (function () {
-  var instance = bloomrun()
+  var instance = bloomrun({ indexing: 'depth' })
   buildFiveHundredEntries(instance)
 
   return fiveHundredEntriesAndProperties
 
   function fiveHundredEntriesAndProperties (done) {
-    var result = instance.lookup({
+    var result = instance.list({
       bigCounter: '99',
       small3: 99,
       something: 'else'
-    })
-    if (!result) {
-      throw new Error('muahah')
-    }
-    process.nextTick(done)
-  }
-})()
-
-var fiveHundredEntriesAndKnownProperties = (function () {
-  var instance = bloomrun()
-  buildFiveHundredEntries(instance)
-
-  return fiveHundredEntriesAndKnownProperties
-
-  function fiveHundredEntriesAndKnownProperties (done) {
-    var result = instance.lookup({
-      bigCounter: '99',
-      small4: 99
     })
     if (!result) {
       throw new Error('muahah')
@@ -117,6 +99,7 @@ var patrunFiveHundredEntriesAndProperties = (function () {
   function patrunFiveHundredEntriesAndProperties (done) {
     var result = instance.list({
       bigCounter: '99',
+      small3: 99,
       something: 'else'
     })
     if (!result) {
@@ -132,17 +115,17 @@ var patrunThreeEntries = (function () {
   instance.add({
     hello: 'world',
     answer: 42
-  })
+  }, 'hello')
 
   instance.add({
     hello: 'matteo',
     answer: 42
-  })
+  }, 'hello')
 
   instance.add({
     something: 'else',
     answer: 42
-  })
+  }, 'hello')
 
   return patrunThreeEntries
 
@@ -162,7 +145,6 @@ var run = bench([
   threeEntries,
   fiveHundredEntries,
   fiveHundredEntriesAndProperties,
-  fiveHundredEntriesAndKnownProperties,
   patrunThreeEntries,
   patrunFiveHundredEntriesAndProperties
 ], 100000)

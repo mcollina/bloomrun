@@ -48,30 +48,6 @@ test('payload is returned instead of pattern if it exists', function (t) {
   t.deepEqual(instance.lookup(pattern), payload)
 })
 
-test('regexp support in the lookup', function (t) {
-  t.plan(1)
-
-  var instance = bloomrun()
-  var pattern = { prefs: 'userId' }
-  var payload = '1234'
-
-  instance.add(pattern, payload)
-
-  t.deepEqual(instance.lookup({ prefs: /user.*/ }), payload)
-})
-
-test('regexp plus props support in the lookup', function (t) {
-  t.plan(1)
-
-  var instance = bloomrun()
-  var pattern = { cmd: 'save', prefs: 'userId' }
-  var payload = '1234'
-
-  instance.add(pattern, payload)
-
-  t.deepEqual(instance.lookup({ cmd: 'save', prefs: /user.*/ }), payload)
-})
-
 test('regexp support in the pattern', function (t) {
   t.plan(1)
 
@@ -94,24 +70,6 @@ test('regexp plus props support in the pattern', function (t) {
   instance.add(pattern, payload)
 
   t.deepEqual(instance.lookup({ cmd: 'save', prefs: 'userId' }), payload)
-})
-
-test('deep pattern matching', function (t) {
-  t.plan(1)
-
-  var instance = bloomrun()
-  var pattern = { role: 'sum', tnx: { side: 'buy' } }
-  var payload = '1234'
-
-  instance.add(pattern, payload)
-
-  t.deepEqual(instance.lookup({
-    role: 'sum',
-    tnx: {
-      side: 'buy',
-      amount: 100
-    }
-  }), payload)
 })
 
 test('functions are supported as payloads', function (t) {
@@ -408,35 +366,6 @@ test('depth support', function (t) {
   t.equal(instance.lookup({ group: '123', another: 'value' }), payloadTwo)
 })
 
-test('recursive depth support', function (t) {
-  t.plan(1)
-
-  var instance = bloomrun({ indexing: 'depth' })
-  var pattern1 = { group: '123', some: { key: 'value' } }
-  var pattern2 = {
-    group: '123',
-    some: {
-      key: 'value',
-      a: 'b'
-    }
-  }
-
-  function payloadOne () { }
-  function payloadTwo () { }
-
-  instance.add(pattern1, payloadOne)
-  instance.add(pattern2, payloadTwo)
-
-  t.equal(instance.lookup({
-    group: '123',
-    some: {
-      key: 'value',
-      a: 'b',
-      c: 'd'
-    }
-  }), payloadTwo)
-})
-
 test('boolean matching', function (t) {
   t.plan(5)
 
@@ -478,22 +407,16 @@ test('List matches partially, regardless of key order (1)', function (t) {
   t.plan(1)
   var instance = bloomrun({ indexing: 'depth' })
 
-  // first bucket
   instance.add({ c: 'CCC' }, 1)
-  // second bucket
   instance.add({ b: 'BBB' }, 2)
-  // first bucket
   instance.add({ a: 'AAA', b: 'BBB', c: 'CCC' }, 3)
-  // first bucket
   instance.add({ a: 'AAA' }, 4)
 
   t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [
-    // first bucket matches
     3,
     1,
-    4,
-    // second bucket matches
-    2
+    2,
+    4
   ])
 })
 
@@ -501,18 +424,13 @@ test('List matches partially, regardless of key order (2)', function (t) {
   t.plan(1)
   var instance = bloomrun({ indexing: 'depth' })
 
-  // this goes in the 1st bucket
   instance.add({ c: 'CCC' }, 2)
-  // and this one too
   instance.add({ c: 'CCC', d: 'DDD' }, 1)
-  // this goes in the 2nd bucket
   instance.add({ a: 'AAA' }, 3)
 
   t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [
-    // first bucket matches
     1,
     2,
-    // second bucket
     3
   ])
 })
@@ -526,30 +444,10 @@ test('List matches partially, in key order (2)', function (t) {
   instance.add({ a: 'AAA' }, 3)
 
   t.deepEqual(instance.list({ a: 'AAA', b: 'BBB', c: 'CCC', d: 'DDD' }), [
-    // first bucket matches
     2,
     1,
-    // second bucket matches
     3
   ])
-})
-
-test('recursive depth support, no other keys', function (t) {
-  t.plan(1)
-
-  var instance = bloomrun({ indexing: 'depth' })
-  var pattern1 = { some: { key: 'value' } }
-  var pattern2 = { some: { key: 'value', a: 'b' } }
-
-  function payloadOne () { }
-  function payloadTwo () { }
-
-  instance.add(pattern1, payloadOne)
-  instance.add(pattern2, payloadTwo)
-
-  t.equal(instance.lookup({
-    some: { key: 'value', a: 'b', c: 'd' }
-  }), payloadTwo)
 })
 
 test('patterns and data can be listed while using payloads', function (t) {

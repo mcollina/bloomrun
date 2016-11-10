@@ -6,8 +6,7 @@
 [![coveralls][coveralls-badge]][coveralls-url]
 [![david][david-badge]][david-url]
 
-A js pattern matcher based on bloom filters, inspired by [patrun](http://npm.im/patrun).
-But different: 3-10x faster, and with results that can be returned in __insertion order__ or __depth order__.
+A js pattern matcher with results that can be returned in __insertion order__ or __depth order__. 2.5KB minified and gzipped, runs in the browser. Inspired by bloom filters.
 
 * [Install](#install)
 * [Example](#example)
@@ -69,7 +68,7 @@ console.log(bloomrun.lookup({say: 'something', to: 'Matteo'}))
 <a name="constructor"></a>
 ### bloomrun([opts])
 
-Creates a new instance of Bloomrun.
+Creates a new instance of __bloomrun__.
 
 Options are:
 
@@ -84,7 +83,7 @@ first overlapping group of patterns that matches.
 <a name="add"></a>
 ### instance.add(pattern [,payload])
 
-Adds a pattern to the Bloomrun instance. You can also provide an alternative
+Adds a pattern to the __bloomrun__ instance. You can also provide an alternative
 payload to return instead of the pattern itself. This allows pattern based
 retrieval of objects. If no payload is provided the pattern itself will be
 returned.
@@ -94,7 +93,7 @@ returned.
 <a name="remove"></a>
 ### instance.remove(pattern [,payload])
 
-Removes a pattern from the Bloomrun instance. Filters are rebuilt after each
+Removes a pattern from the __bloomrun__ instance. Filters are rebuilt after each
 removal which may mean the same pattern is matched by another filter. In cases
 where two patterns differ only by payload, the supplied payload can be used to
 determine the correct match. If no payload is supplied any matched pattern will
@@ -192,11 +191,7 @@ This project was kindly sponsored by [nearForm](http://nearform.com).
 This library is heavily inspired by Richard Rodger's
 [patrun](http://npm.im/patrun) and [Seneca](http://npm.im/seneca).
 
-Bloomrun would not be possible without
-[bloomfilter](https://www.npmjs.com/package/bloomfilter).
-
 The bloomrun logo was created, with thanks, by [Dean McDonnell](https:/github.com/mcdonnelldean)
-
 
 ## License
 
