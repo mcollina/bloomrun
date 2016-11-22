@@ -486,3 +486,23 @@ test('list should return the default', function (t) {
     payload: payload
   }])
 })
+
+test('issue#46 - pattern is not equals', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern = {
+    topic: 'math',
+    cmd: 'add1'
+  }
+  var payload = '1234'
+
+  instance.add(pattern, payload)
+
+  var pattern2 = {
+    topic: 'math',
+    cmd: 'add10'
+  }
+
+  t.deepEqual(instance.lookup(pattern2), null)
+})
