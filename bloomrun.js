@@ -72,6 +72,11 @@ Bloomrun.prototype.remove = function (pattern, payload) {
   var bucket = null
   payload = payload || null
 
+  if (onlyRegex(pattern)) {
+    this._regexBucket.remove(pattern, payload)
+    return this
+  }
+
   for (var key in pattern) {
     if (pattern.hasOwnProperty(key)) {
       if (typeof pattern[key] !== 'object') {

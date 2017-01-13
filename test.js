@@ -166,6 +166,21 @@ test('removing patterns is supported', function (t) {
   t.equal(instance.lookup({ group: '123' }), null)
 })
 
+test('removing regex pattern without other keys is supported', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+  var pattern = { to: /.*/ }
+
+  instance.add(pattern)
+
+  t.deepEqual(instance.lookup({ to: 'you' }), pattern)
+
+  instance.remove(pattern)
+
+  t.equal(instance.lookup({ to: 'you' }), null)
+})
+
 test('remove deletes all matches', function (t) {
   t.plan(2)
 
