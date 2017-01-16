@@ -521,3 +521,21 @@ test('issue#46 - pattern is not equals', function (t) {
 
   t.deepEqual(instance.lookup(pattern2), null)
 })
+
+test('depth indexing preserves insertion order for same pattern', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun({ indexing: 'depth' })
+  var pattern = { group: '123', another: 'value' }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern, payloadOne)
+  instance.add(pattern, payloadTwo)
+
+  t.deepEqual(instance.list({ group: '123', another: 'value' }), [
+    payloadOne,
+    payloadTwo
+  ])
+})
