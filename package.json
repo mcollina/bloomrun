@@ -21,15 +21,15 @@
     "sorted-array-functions": "^1.0.0"
   },
   "devDependencies": {
-    "coveralls": "^2.11.11",
+    "coveralls": "^2.13.1",
     "fastbench": "^1.0.0",
     "faucet": "0.0.1",
     "istanbul": "^0.4.1",
     "patrun": "^0.5.0",
     "pre-commit": "^1.1.1",
-    "snazzy": "^6.0.0",
-    "standard": "^9.0.0",
-    "tape": "^4.0.2",
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.0",
+    "tape": "^4.8.0",
     "zuul": "^3.11.1"
   }
 }
