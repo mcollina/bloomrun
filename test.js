@@ -166,6 +166,21 @@ test('removing patterns is supported', function (t) {
   t.equal(instance.lookup({ group: '123' }), null)
 })
 
+test('removing regex pattern without other keys is supported', function (t) {
+  t.plan(2)
+
+  var instance = bloomrun()
+  var pattern = { to: /.*/ }
+
+  instance.add(pattern)
+
+  t.deepEqual(instance.lookup({ to: 'you' }), pattern)
+
+  instance.remove(pattern)
+
+  t.equal(instance.lookup({ to: 'you' }), null)
+})
+
 test('remove deletes all matches', function (t) {
   t.plan(2)
 
@@ -485,4 +500,42 @@ test('list should return the default', function (t) {
     default: true,
     payload: payload
   }])
+})
+
+test('issue#46 - pattern is not equals', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var pattern = {
+    topic: 'math',
+    cmd: 'add1'
+  }
+  var payload = '1234'
+
+  instance.add(pattern, payload)
+
+  var pattern2 = {
+    topic: 'math',
+    cmd: 'add10'
+  }
+
+  t.deepEqual(instance.lookup(pattern2), null)
+})
+
+test('depth indexing preserves insertion order for same pattern', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun({ indexing: 'depth' })
+  var pattern = { group: '123', another: 'value' }
+
+  function payloadOne () { }
+  function payloadTwo () { }
+
+  instance.add(pattern, payloadOne)
+  instance.add(pattern, payloadTwo)
+
+  t.deepEqual(instance.list({ group: '123', another: 'value' }), [
+    payloadOne,
+    payloadTwo
+  ])
 })
