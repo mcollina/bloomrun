@@ -85,10 +85,8 @@ Bloomrun.prototype.remove = function (pattern, payload) {
 
           if (bucket.remove(pattern, payload)) {
             removeBucket(this._buckets, bucket)
+            delete this._tree[key][pattern[key]]
             bucket.forEach(addPatternSet, this)
-            if (bucket.data.length === 0) {
-              delete this._tree[key][pattern[key]]
-            }
           }
         }
       }
