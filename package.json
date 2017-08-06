@@ -21,6 +21,7 @@
     "sorted-array-functions": "^1.0.0"
   },
   "devDependencies": {
+    "benchmark": "^2.1.4",
     "coveralls": "^2.13.1",
     "fastbench": "^1.0.0",
     "faucet": "0.0.1",

@@ -2,7 +2,7 @@ const Benchmark = require('benchmark')
 const suite = new Benchmark.Suite()
 
 const patrun = require('patrun')({ gex: true })
-const bloomrun = require('.')()
+const bloomrun = require('..')()
 
 patrun.add({ role: 'test', action: 'other', id: '*' }, 'result')
 bloomrun.add({ role: 'test', action: 'other', id: /.*/ }, 'result')
