@@ -539,3 +539,36 @@ test('depth indexing preserves insertion order for same pattern', function (t) {
     payloadTwo
   ])
 })
+
+test('issue#57 - Removing many pattern should not lead to finite recursion', function (t) {
+  t.plan(1)
+
+  var instance = bloomrun()
+  var noop = function () { return 'test' }
+
+  instance.add({ topic: 'math', cmd: 'add1' }, noop)
+  instance.add({ topic: 'math', cmd: 'add2' }, noop)
+  instance.add({ topic: 'math', cmd: 'add3' }, noop)
+  instance.add({ topic: 'math', cmd: 'add4' }, noop)
+  instance.add({ topic: 'math', cmd: 'add5' }, noop)
+  instance.add({ topic: 'math', cmd: 'add6' }, noop)
+  instance.add({ topic: 'math', cmd: 'add7' }, noop)
+  instance.add({ topic: 'math', cmd: 'add8' }, noop)
+  instance.add({ topic: 'math', cmd: 'add9' }, noop)
+  instance.add({ topic: 'math', cmd: 'add10' }, noop)
+  instance.add({ topic: 'math', cmd: 'add11' }, noop)
+  instance.add({ topic: 'math', cmd: 'add12' }, noop)
+  instance.add({ topic: 'math', cmd: 'add13' }, noop)
+  instance.add({ topic: 'math', cmd: 'add14' }, noop)
+  instance.add({ topic: 'math', cmd: 'add15' }, noop)
+  instance.add({ topic: 'math', cmd: 'add16' }, noop)
+  instance.add({ topic: 'math', cmd: 'add17' }, noop)
+
+  instance.list(null, {
+    patterns: true
+  }).forEach(function (element) {
+    instance.remove(element)
+  })
+
+  t.deepEqual(instance.list().length, 0)
+})
