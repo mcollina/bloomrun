@@ -1,17 +1,37 @@
+'use strict'
+
 const Benchmark = require('benchmark')
 const suite = new Benchmark.Suite()
+const Patrun = require('patrun')
+const Bloomrun = require('..')
 
-const patrun = require('patrun')({ gex: true })
-const bloomrun = require('..')()
+const patrun = Patrun({ gex: true })
+const bloomrun = Bloomrun()
 
 patrun.add({ role: 'test', action: 'other', id: '*' }, 'result')
 bloomrun.add({ role: 'test', action: 'other', id: /.*/ }, 'result')
 
-suite.add('patrun#add', () => {
+for (var i = 0; i < 10000; i++) {
   patrun.add({test: 'pattern'}, 'test pattern')
-})
-suite.add('bloomrun#add', () => {
   bloomrun.add({test: 'pattern'}, 'test pattern')
+}
+
+suite.add('patrun#add', () => {
+  var patrun = Patrun({ gex: true })
+  patrun.add({ role: 'test', action: 'other', id: '*' }, 'result')
+
+  for (var i = 0; i < 1000; i++) {
+    patrun.add({test: 'pattern'}, 'test pattern')
+  }
+})
+
+suite.add('bloomrun#add', () => {
+  var bloomrun = Bloomrun()
+  bloomrun.add({ role: 'test', action: 'other', id: /.*/ }, 'result')
+
+  for (var i = 0; i < 1000; i++) {
+    bloomrun.add({test: 'pattern'}, 'test pattern')
+  }
 })
 
 suite.add('patrun#find', () => {
