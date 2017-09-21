@@ -522,7 +522,7 @@ test('issue#46 - pattern is not equals', function (t) {
   t.deepEqual(instance.lookup(pattern2), null)
 })
 
-test('issue#55 - pattern is not equals', function (t) {
+test('issue#55 - unexpected behaviour using indexing:depth', function (t) {
   t.plan(2)
 
   var instance = bloomrun({ indexing: 'depth' })
