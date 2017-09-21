@@ -77,7 +77,7 @@ Options are:
   if set to `depth`, it will try to match entries with the most
   properties first. Depth indexing is guaranteed if the patterns
 overlaps. If multiple matching patterns overlaps it checks on the
-first overlapping group of patterns that matches. _The order is not guranteed._
+first overlapping group of patterns that matches. _The order is not guaranteed._
 
 -------------------------------------------------------
 <a name="add"></a>
