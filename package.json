@@ -24,7 +24,6 @@
     "benchmark": "^2.1.4",
     "coveralls": "^2.13.1",
     "fastbench": "^1.0.0",
-    "faucet": "0.0.1",
     "istanbul": "^0.4.1",
     "patrun": "^0.5.0",
     "pre-commit": "^1.1.1",
