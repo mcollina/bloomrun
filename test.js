@@ -522,22 +522,18 @@ test('issue#46 - pattern is not equals', function (t) {
   t.deepEqual(instance.lookup(pattern2), null)
 })
 
-test('depth indexing preserves insertion order for same pattern', function (t) {
-  t.plan(1)
+test('issue#55 - pattern is not equals', function (t) {
+  t.plan(2)
 
   var instance = bloomrun({ indexing: 'depth' })
-  var pattern = { group: '123', another: 'value' }
+  instance.add({ role: 'tag', cmd: 'find' }, 'tag,find')
+  instance.add({ role: 'location', cmd: 'find' }, 'location,find')
 
-  function payloadOne () { }
-  function payloadTwo () { }
+  instance.add({ role: 'tag', cmd: 'find', count: /.*/ }, 'tag,find,count')
+  instance.add({ role: 'location', cmd: 'find', count: /.*/ }, 'location,find,count')
 
-  instance.add(pattern, payloadOne)
-  instance.add(pattern, payloadTwo)
-
-  t.deepEqual(instance.list({ group: '123', another: 'value' }), [
-    payloadOne,
-    payloadTwo
-  ])
+  t.deepEqual(instance.lookup({ role: 'location', cmd: 'find', count: 'true' }), 'location,find,count')
+  t.deepEqual(instance.lookup({ role: 'location', cmd: 'find' }), 'location,find')
 })
 
 test('issue#57 - Removing many pattern should not lead to finite recursion', function (t) {
