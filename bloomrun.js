@@ -152,4 +152,8 @@ Bloomrun.prototype.iterator = function (obj, opts) {
   return new Iterator(this, obj, asMatch)
 }
 
+Bloomrun.prototype[Symbol.iterator] = function () {
+  return this.iterator()[Symbol.iterator]()
+}
+
 module.exports = Bloomrun

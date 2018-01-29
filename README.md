@@ -79,6 +79,11 @@ Options are:
 overlaps. If multiple matching patterns overlaps it checks on the
 first overlapping group of patterns that matches. The insertion order of pattern with the same depth is not guaranteed.
 
+`for..of` construct:
+
+The bloomrun instance implements iterable protocol, **all** added patterns can be looped 
+over in a `for..of` construct. 
+
 -------------------------------------------------------
 <a name="add"></a>
 ### instance.add(pattern [,payload])
@@ -137,6 +142,11 @@ form:
   payload
 }
 ```
+
+`for..of` construct:
+
+The iterator also implements iterable protocol, matched patterns can be looped 
+over in a `for..of` construct.
 
 -------------------------------------------------------
 <a name="list"></a>

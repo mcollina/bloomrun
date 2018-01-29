@@ -568,3 +568,39 @@ test('issue#57 - Removing many pattern should not lead to finite recursion', fun
 
   t.deepEqual(instance.list().length, 0)
 })
+
+test('issue#64 - Add `for of` support for iterator', function (t) {
+  t.plan(3)
+
+  var instance = bloomrun()
+
+  var patterns = [{ hello: 'world', num: 0 }, { hello: 'world', num: 1 }, { hello: 'world', num: 2 }]
+
+  for (var pattern of patterns) {
+    instance.add(pattern)
+  }
+
+  var iterator = instance.iterator()
+
+  var index = 0
+  for (var it of iterator) {
+    t.equal(it, patterns[index++])
+  }
+})
+
+test('`for of` support for main bloomrun object', function (t) {
+  t.plan(3)
+
+  var instance = bloomrun()
+
+  var patterns = [{ hello: 'world', num: 0 }, { hello: 'world', num: 1 }, { hello: 'world', num: 2 }]
+
+  for (var pattern of patterns) {
+    instance.add(pattern)
+  }
+
+  var index = 0
+  for (var it of instance) {
+    t.equal(it, patterns[index++])
+  }
+})
