@@ -181,6 +181,25 @@ test('removing regex pattern without other keys is supported', function (t) {
   t.equal(instance.lookup({ to: 'you' }), null)
 })
 
+test('removing regex pattern without other keys is supported - wildcard case', function (t) {
+  t.plan(3)
+
+  var instance = bloomrun()
+  var regExPattern1 = { to: /^[a-zA-Z0-9-.]+$/i }
+  var regExPattern2 = { to: /^[0-9]+$/i }
+
+  instance.add(regExPattern1)
+  instance.add(regExPattern2)
+
+  t.deepEqual(instance.lookup({ to: 'you' }), regExPattern1)
+
+  instance.remove(regExPattern1)
+
+  t.equal(instance.lookup({ to: 'you' }), null)
+  // second pattern should be still there because it doesn't match
+  t.ok(instance.lookup({ to: '123' }))
+})
+
 test('remove deletes all matches', function (t) {
   t.plan(2)
 

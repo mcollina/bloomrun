@@ -6,9 +6,10 @@
   "scripts": {
     "bench": "node bench.js",
     "test": "standard | snazzy && tape test.js | tap-spec",
+    "test:cov": "nyc tape test.js | tap-spec",
     "zuul-local": "zuul --open --local 8081 -- test.js",
-    "coverage": "istanbul cover tape test.js > /dev/null; open coverage/lcov-report/index.html",
-    "coveralls": "istanbul cover tape test.js; cat coverage/lcov.info | coveralls"
+    "coverage": "npm run test:cov && nyc report --reporter=html tape test.js",
+    "coveralls": "npm run test:cov && nyc report --reporter=text-lcov | coveralls"
   },
   "precommit": "test",
   "author": "Matteo Collina <hello@matteocollina.com>",
@@ -21,6 +22,7 @@
     "sorted-array-functions": "^1.1.0"
   },
   "devDependencies": {
+    "nyc": "^13.1.0",
     "benchmark": "^2.1.4",
     "coveralls": "^3.0.0",
     "fastbench": "^1.0.0",
